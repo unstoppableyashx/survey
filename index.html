@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y.E.S. Academy | Survey Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .tab-btn.active { border-bottom: 2px solid #4f46e5; color: #4f46e5; font-weight: 600; }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast-enter { animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        
+        /* Modal Animation */
+        .modal-bg { backdrop-filter: blur(4px); transition: opacity 0.3s; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col relative">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="bg-indigo-600 p-2 rounded-lg text-white">
+                        <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900">
+                        Y.E.S. <span class="text-indigo-600">ACADEMY</span>
+                    </span>
+                </div>
+                
+                <div class="flex gap-2 sm:gap-4">
+                    <button onclick="window.handleTabClick('survey')" id="btn-survey" class="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all bg-indigo-50 text-indigo-700">
+                        <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Take Survey</span>
+                        <span class="sm:hidden">Survey</span>
+                    </button>
+                    <button onclick="window.handleTabClick('dashboard')" id="btn-dashboard" class="flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all text-slate-500 hover:bg-slate-100">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Dashboard</span>
+                        <span class="sm:hidden">Stats</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        
+        <section id="survey-section" class="max-w-2xl mx-auto animate-fade-in">
+            <div class="mb-6">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">New Student Entry</h2>
+                <p class="text-slate-500 text-sm sm:text-base mt-1">Collect details during the village survey. (Public Access)</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                <form id="surveyForm" class="space-y-6">
+                    <input type="hidden" id="editDocId">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="space-y-1.5 sm:col-span-2">
+                            <label class="text-sm font-semibold text-slate-700">Student Name</label>
+                            <input type="text" id="studentName" placeholder="Enter full name" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                        </div>
+                        
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-slate-700">Age</label>
+                            <input type="number" id="age" placeholder="Student's age" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-slate-700">Gender</label>
+                            <div class="flex gap-4 mt-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="gender" id="genderBoy" value="Boy" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
+                                    <span class="text-sm text-slate-700">Boy</span>
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="radio" name="gender" id="genderGirl" value="Girl" class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
+                                    <span class="text-sm text-slate-700">Girl</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-slate-700">Village</label>
+                            <input type="text" id="village" placeholder="Village name" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-slate-700">Admission Class</label>
+                            <select id="class" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white" required>
+                                <option value="" disabled selected>Select class</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="1st">1st Grade</option>
+                                <option value="2nd">2nd Grade</option>
+                                <option value="3rd">3rd Grade</option>
+                                <option value="4th">4th Grade</option>
+                                <option value="5th">5th Grade</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-100">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="space-y-1.5 sm:col-span-2">
+                            <label class="text-sm font-semibold text-slate-700">Guardian Name</label>
+                            <input type="text" id="parentName" placeholder="Father or Mother's name" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                        </div>
+                        
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-slate-700">Primary Phone</label>
+                            <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" pattern="[0-9]{10}" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-sm font-semibold text-slate-700">Alternate Phone <span class="text-slate-400 font-normal">(Optional)</span></label>
+                            <input type="tel" id="altPhone" placeholder="Optional 10-digit number" maxlength="10" pattern="[0-9]{10}" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700">Current Education Status</label>
+                        <select id="status" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white" required>
+                            <option value="Currently Studying">Currently Studying (Other School)</option>
+                            <option value="Dropout">Dropout (Left School)</option>
+                            <option value="Never Enrolled">Never Enrolled (Fresher)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2">
+                        <i data-lucide="save" class="w-5 h-5"></i>
+                        Save Survey Data
+                    </button>
+                    <button type="button" id="cancelEditBtn" onclick="window.cancelEdit()" class="hidden w-full mt-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
+                        Cancel Edit
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="login-section" class="max-w-md mx-auto hidden animate-fade-in pt-10">
+            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-8">
+                <div class="text-center mb-6">
+                    <div class="bg-indigo-100 p-3 rounded-full inline-block text-indigo-600 mb-3">
+                        <i data-lucide="shield" class="w-8 h-8"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900">Admin Secure Login</h2>
+                    <p class="text-slate-500 text-sm mt-1">Device verification required</p>
+                </div>
+
+                <form id="loginForm" class="space-y-5">
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700">Admin Email</label>
+                        <input type="email" id="loginEmail" placeholder="admin@example.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-sm font-semibold text-slate-700">Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                    </div>
+                    <button type="submit" id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex justify-center items-center gap-2">
+                        <i data-lucide="log-in" class="w-5 h-5"></i> Authenticate Device
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="dashboard-section" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Dashboard & Data</h2>
+                    <p class="text-slate-500 text-sm sm:text-base mt-1">Manage, filter, export, and control access.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="window.openPreviewModal()" class="flex items-center gap-2 p-2 px-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 hover:bg-emerald-100 transition-all shadow-sm font-semibold text-sm">
+                        <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Export Excel
+                    </button>
+                    <button onclick="window.loadDashboardData()" class="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm" title="Refresh Data">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="window.logoutAdmin()" class="flex items-center gap-2 p-2 px-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-600 hover:bg-rose-100 transition-all shadow-sm font-semibold text-sm">
+                        <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex gap-6 border-b border-slate-200 overflow-x-auto whitespace-nowrap pb-1">
+                <button onclick="switchDashTab('analytics')" id="tab-analytics" class="tab-btn active pb-2 px-1 text-slate-500 flex items-center gap-2">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Analytics
+                </button>
+                <button onclick="switchDashTab('data')" id="tab-data" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
+                    <i data-lucide="database" class="w-4 h-4"></i> View Data
+                </button>
+                <button onclick="switchDashTab('trash')" id="tab-trash" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Trash Bin
+                </button>
+                <button onclick="window.openDeviceTab()" id="tab-devices" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2 ml-auto">
+                    <i data-lucide="smartphone" class="w-4 h-4"></i> Device Info <i data-lucide="lock" class="w-3 h-3 text-rose-500"></i>
+                </button>
+            </div>
+
+            <div id="content-analytics" class="space-y-6 animate-fade-in">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div class="bg-indigo-100 p-3 rounded-xl text-indigo-600">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Active Surveys</p>
+                            <h3 id="totalCount" class="text-2xl font-bold text-slate-900">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div class="bg-emerald-100 p-3 rounded-xl text-emerald-600">
+                            <i data-lucide="map-pin" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Villages Covered</p>
+                            <h3 id="villageCount" class="text-2xl font-bold text-slate-900">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                        <div class="bg-rose-100 p-3 rounded-xl text-rose-600">
+                            <i data-lucide="user-minus" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Dropouts Found</p>
+                            <h3 id="dropoutCount" class="text-2xl font-bold text-slate-900">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 md:col-span-1">
+                        <h4 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="users" class="w-4 h-4 text-indigo-500"></i> Gender Ratio
+                        </h4>
+                        <div class="relative h-48 w-full flex justify-center">
+                            <canvas id="genderChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 md:col-span-2">
+                        <h4 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="pie-chart" class="w-4 h-4 text-indigo-500"></i> Village Distribution
+                        </h4>
+                        <div class="relative h-48 w-full flex justify-center">
+                            <canvas id="villageChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 md:col-span-3">
+                        <h4 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="bar-chart-2" class="w-4 h-4 text-indigo-500"></i> Class Distribution
+                        </h4>
+                        <div class="relative h-64 w-full">
+                            <canvas id="classChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-data" class="hidden space-y-4 animate-fade-in">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 grid grid-cols-1 sm:grid-cols-4 gap-4">
+                    <input type="text" id="filterName" placeholder="Search by name..." class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full" oninput="window.applyFilters()">
+                    <select id="filterVillageList" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white" onchange="window.applyFilters()">
+                        <option value="">All Villages</option>
+                    </select>
+                    <select id="filterClassList" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white" onchange="window.applyFilters()">
+                        <option value="">All Classes</option>
+                        <option value="Nursery">Nursery</option>
+                        <option value="LKG">LKG</option>
+                        <option value="UKG">UKG</option>
+                        <option value="1st">1st Grade</option>
+                        <option value="2nd">2nd Grade</option>
+                        <option value="3rd">3rd Grade</option>
+                        <option value="4th">4th Grade</option>
+                        <option value="5th">5th Grade</option>
+                    </select>
+                    <select id="filterStatus" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white" onchange="window.applyFilters()">
+                        <option value="">All Statuses</option>
+                        <option value="Currently Studying">Currently Studying</option>
+                        <option value="Dropout">Dropout</option>
+                        <option value="Never Enrolled">Never Enrolled</option>
+                    </select>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50 text-slate-600">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Name</th>
+                                <th class="px-4 py-3 text-left font-semibold">Age/Gender</th>
+                                <th class="px-4 py-3 text-left font-semibold">Village</th>
+                                <th class="px-4 py-3 text-left font-semibold">Class</th>
+                                <th class="px-4 py-3 text-left font-semibold">Contact</th>
+                                <th class="px-4 py-3 text-left font-semibold">Status</th>
+                                <th class="px-4 py-3 text-center font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activeDataTable" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="content-trash" class="hidden space-y-4 animate-fade-in">
+                <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm">
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                    Files here are soft-deleted. You can restore them or delete them permanently.
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50 text-slate-600">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Name</th>
+                                <th class="px-4 py-3 text-left font-semibold">Village</th>
+                                <th class="px-4 py-3 text-left font-semibold">Class</th>
+                                <th class="px-4 py-3 text-center font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trashDataTable" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="content-devices" class="hidden space-y-4 animate-fade-in">
+                <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-alert" class="w-6 h-6 text-amber-600"></i>
+                        <div>
+                            <h4 class="font-semibold text-sm">Device Access Control</h4>
+                            <p class="text-xs opacity-80">Only allowed devices can login. You can revoke access below.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-amber-200">
+                        <span class="text-sm font-semibold">Allowed Devices Limit:</span>
+                        <input type="number" id="maxDevicesInput" value="1" min="1" max="10" class="w-16 px-2 py-1 border border-slate-300 rounded outline-none text-center">
+                        <button onclick="window.saveDeviceLimit()" class="text-indigo-600 hover:text-indigo-800"><i data-lucide="save" class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-sm">
+                        <thead class="bg-slate-50 text-slate-600">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Device / Browser</th>
+                                <th class="px-4 py-3 text-left font-semibold">IP Address</th>
+                                <th class="px-4 py-3 text-left font-semibold">Battery</th>
+                                <th class="px-4 py-3 text-left font-semibold">Last Active</th>
+                                <th class="px-4 py-3 text-center font-semibold">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deviceTable" class="divide-y divide-slate-200">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <div id="excelModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center">
+        <div class="absolute inset-0 bg-slate-900/40 modal-bg" onclick="window.closePreviewModal()"></div>
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl mx-4 z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="file-spreadsheet" class="w-5 h-5 text-emerald-600"></i> Excel Data Preview
+                </h3>
+                <button onclick="window.closePreviewModal()" class="text-slate-400 hover:text-rose-500 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 overflow-auto flex-grow bg-slate-50/50">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200 text-xs">
+                        <thead class="bg-emerald-50 text-emerald-800">
+                            <tr id="previewTableHead"></tr>
+                        </thead>
+                        <tbody id="previewTableBody" class="divide-y divide-slate-200"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 border-t border-slate-200 flex justify-end gap-3 bg-white">
+                <button onclick="window.closePreviewModal()" class="px-4 py-2 rounded-lg font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all">Cancel</button>
+                <button onclick="window.executeExcelExport()" class="px-4 py-2 rounded-lg font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-all flex items-center gap-2 shadow-md">
+                    <i data-lucide="download" class="w-4 h-4"></i> Download Excel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[150] flex flex-col gap-3"></div>
+
+    <script>
+        lucide.createIcons();
+        window.firebaseUser = null; 
+        window.currentActiveTab = 'survey'; 
+        window.currentFilteredData = []; // Store current filtered data for Export
+
+        window.showToast = function(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-emerald-600' : 'bg-rose-600';
+            const icon = type === 'success' ? 'check-circle' : 'alert-circle';
+
+            toast.className = `toast-enter ${bgColor} text-white px-5 py-3.5 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-300`;
+            toast.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i><span class="font-medium text-sm">${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        window.renderUIState = function() {
+            const surveySec = document.getElementById('survey-section');
+            const loginSec = document.getElementById('login-section');
+            const dashSec = document.getElementById('dashboard-section');
+            const btnSurvey = document.getElementById('btn-survey');
+            const btnDash = document.getElementById('btn-dashboard');
+
+            btnSurvey.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all text-slate-500 hover:bg-slate-100";
+            btnDash.className = "flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all text-slate-500 hover:bg-slate-100";
+            
+            surveySec.classList.add('hidden');
+            loginSec.classList.add('hidden');
+            dashSec.classList.add('hidden');
+
+            if (window.currentActiveTab === 'survey') {
+                btnSurvey.classList.add('bg-indigo-50', 'text-indigo-700');
+                btnSurvey.classList.remove('text-slate-500');
+                surveySec.classList.remove('hidden');
+            } else if (window.currentActiveTab === 'dashboard') {
+                btnDash.classList.add('bg-indigo-50', 'text-indigo-700');
+                btnDash.classList.remove('text-slate-500');
+                
+                if (window.firebaseUser) {
+                    dashSec.classList.remove('hidden');
+                    if(window.loadDashboardData) window.loadDashboardData(); 
+                } else {
+                    loginSec.classList.remove('hidden');
+                }
+            }
+        }
+
+        window.handleTabClick = function(tab) {
+            window.currentActiveTab = tab;
+            window.renderUIState();
+        }
+
+        window.switchDashTab = function(tab) {
+            ['analytics', 'data', 'trash', 'devices'].forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('active', 'text-indigo-600', 'border-indigo-600');
+            });
+            document.getElementById(`content-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.add('active', 'text-indigo-600', 'border-indigo-600');
+        }
+
+        // Generate unique local device ID
+        window.getLocalDeviceId = function() {
+            let id = localStorage.getItem('survey_local_device');
+            if(!id) {
+                id = 'DEV_' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                localStorage.setItem('survey_local_device', id);
+            }
+            return id;
+        }
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyChl-UgqDIqWZ3zaLQvl5WLzx-CHPMglWc",
+            authDomain: "survey-2c237.firebaseapp.com",
+            projectId: "survey-2c237",
+            storageBucket: "survey-2c237.firebasestorage.app",
+            messagingSenderId: "428259476424",
+            appId: "1:428259476424:web:2371746ff34b8fdad636fd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        let allSurveys = []; 
+
+        onAuthStateChanged(auth, async (user) => {
+            window.firebaseUser = user;
+            if(user) {
+                await checkAndRegisterDevice();
+            }
+            window.renderUIState(); 
+        });
+
+        // --- Device Tracking & Limit Logic ---
+        async function checkAndRegisterDevice() {
+            const deviceId = window.getLocalDeviceId();
+            try {
+                // Fetch IP
+                let ip = "Unknown";
+                try {
+                    const res = await fetch('https://api.ipify.org?format=json');
+                    const data = await res.json();
+                    ip = data.ip;
+                } catch(e) {}
+
+                // Fetch Battery
+                let battery = "Unknown";
+                try {
+                    if(navigator.getBattery) {
+                        const bat = await navigator.getBattery();
+                        battery = Math.round(bat.level * 100) + "% " + (bat.charging ? "⚡" : "");
+                    }
+                } catch(e) {}
+
+                // Get Settings
+                const settingsRef = doc(db, "settings", "login_config");
+                const settingsSnap = await getDoc(settingsRef);
+                let maxDevices = 1;
+                if(settingsSnap.exists()) {
+                    maxDevices = settingsSnap.data().maxDevices || 1;
+                    document.getElementById('maxDevicesInput').value = maxDevices;
+                } else {
+                    await setDoc(settingsRef, { maxDevices: 1 });
+                }
+
+                // Check active devices
+                const devicesQuery = await getDocs(collection(db, "devices"));
+                let deviceList = [];
+                let deviceExists = false;
+                
+                devicesQuery.forEach(d => {
+                    if(d.id === deviceId) deviceExists = true;
+                    deviceList.push(d.id);
+                });
+
+                if(!deviceExists && deviceList.length >= maxDevices) {
+                    window.showToast("Access Denied: Device limit reached. Contact Admin.", "error");
+                    await signOut(auth);
+                    return;
+                }
+
+                // Save/Update Device Session
+                const browserInfo = navigator.userAgent.substring(0, 40) + "...";
+                await setDoc(doc(db, "devices", deviceId), {
+                    ip: ip,
+                    battery: battery,
+                    browser: browserInfo,
+                    lastActive: new Date().toLocaleString()
+                });
+
+            } catch(e) { console.error("Device verification error", e); }
+        }
+
+        // --- Auth Functions ---
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.getElementById('loginBtn');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Checking...`;
+            btn.disabled = true;
+            lucide.createIcons();
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.showToast("Login Successful!", "success");
+                document.getElementById('loginForm').reset();
+            } catch (error) {
+                console.error(error);
+                window.showToast("Login Failed. Check Email/Password.", "error");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        window.logoutAdmin = async function() {
+            try {
+                await signOut(auth);
+                window.showToast("Logged out.", "success");
+                window.handleTabClick('survey'); 
+            } catch(e) {}
+        }
+
+
+        // --- PIN Logic for Device Tab ---
+        window.openDeviceTab = function() {
+            const pin = prompt("🔐 Enter PIN to access Device Info:");
+            if(pin === "6266") {
+                window.switchDashTab('devices');
+                loadDevicesList();
+            } else if (pin !== null) {
+                window.showToast("Incorrect PIN!", "error");
+            }
+        }
+
+        async function loadDevicesList() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "devices"));
+                const tbody = document.getElementById('deviceTable');
+                tbody.innerHTML = '';
+                const currentDevId = window.getLocalDeviceId();
+
+                querySnapshot.forEach(doc => {
+                    const d = doc.data();
+                    const isMe = doc.id === currentDevId;
+                    tbody.innerHTML += `
+                        <tr class="${isMe ? 'bg-indigo-50' : 'hover:bg-slate-50'}">
+                            <td class="px-4 py-3 text-slate-800 text-xs font-mono">${d.browser} ${isMe ? '<span class="bg-indigo-600 text-white px-2 py-0.5 rounded text-[10px] ml-2">This Device</span>' : ''}</td>
+                            <td class="px-4 py-3 font-semibold text-slate-700">${d.ip}</td>
+                            <td class="px-4 py-3 text-slate-600">${d.battery}</td>
+                            <td class="px-4 py-3 text-slate-500 text-xs">${d.lastActive}</td>
+                            <td class="px-4 py-3 text-center">
+                                ${!isMe ? `<button onclick="window.removeDevice('${doc.id}')" class="p-1.5 bg-rose-100 text-rose-700 rounded hover:bg-rose-200" title="Revoke Access"><i data-lucide="trash" class="w-4 h-4"></i></button>` : '-'}
+                            </td>
+                        </tr>
+                    `;
+                });
+                lucide.createIcons();
+            } catch(e) { console.error(e); }
+        }
+
+        window.removeDevice = async function(id) {
+            if(confirm("Revoke access for this device? It will be logged out.")) {
+                await deleteDoc(doc(db, "devices", id));
+                window.showToast("Device revoked.", "success");
+                loadDevicesList();
+            }
+        }
+
+        window.saveDeviceLimit = async function() {
+            const limit = parseInt(document.getElementById('maxDevicesInput').value);
+            await setDoc(doc(db, "settings", "login_config"), { maxDevices: limit });
+            window.showToast(`Limit updated to ${limit} devices.`, "success");
+        }
+
+
+        // --- Survey Form Logic (Same as before) ---
+        document.getElementById('surveyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Saving...`;
+            submitBtn.disabled = true;
+
+            const data = {
+                studentName: document.getElementById('studentName').value.trim(),
+                age: parseInt(document.getElementById('age').value),
+                gender: document.querySelector('input[name="gender"]:checked').value,
+                village: document.getElementById('village').value.trim().toUpperCase(),
+                class: document.getElementById('class').value,
+                parentName: document.getElementById('parentName').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                altPhone: document.getElementById('altPhone').value.trim(),
+                status: document.getElementById('status').value,
+            };
+
+            const editId = document.getElementById('editDocId').value;
+
+            try {
+                if (editId) {
+                    await updateDoc(doc(db, "surveys", editId), data);
+                    window.showToast("Updated successfully!", "success");
+                    window.cancelEdit();
+                    window.handleTabClick('dashboard');
+                } else {
+                    data.timestamp = new Date();
+                    data.isDeleted = false; 
+                    await addDoc(collection(db, "surveys"), data);
+                    window.showToast("Saved successfully!", "success");
+                    document.getElementById('surveyForm').reset();
+                }
+            } catch (error) {
+                window.showToast("Failed to save data.", "error");
+            } finally {
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                lucide.createIcons();
+            }
+        });
+
+        window.cancelEdit = function() {
+            document.getElementById('surveyForm').reset();
+            document.getElementById('editDocId').value = "";
+            document.getElementById('submitBtn').innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> Save Survey Data`;
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            lucide.createIcons();
+        }
+
+        // --- Dashboard & Excel Logic ---
+        window.loadDashboardData = async function() {
+            if (!window.firebaseUser) return; 
+            try {
+                const querySnapshot = await getDocs(collection(db, "surveys"));
+                allSurveys = [];
+                querySnapshot.forEach((doc) => {
+                    allSurveys.push({ id: doc.id, ...doc.data() });
+                });
+                populateFilters();
+                window.applyFilters(); 
+            } catch (error) {
+                window.showToast("Failed to load data.", "error");
+            }
+        };
+
+        function populateFilters() {
+            const villageSet = new Set();
+            allSurveys.forEach(s => { if(!s.isDeleted && s.village) villageSet.add(s.village); });
+            const vSelect = document.getElementById('filterVillageList');
+            vSelect.innerHTML = '<option value="">All Villages</option>';
+            villageSet.forEach(v => { vSelect.innerHTML += `<option value="${v}">${v}</option>`; });
+        }
+
+        window.applyFilters = function() {
+            const search = document.getElementById('filterName').value.toLowerCase();
+            const vil = document.getElementById('filterVillageList').value;
+            const cls = document.getElementById('filterClassList').value;
+            const status = document.getElementById('filterStatus').value;
+
+            window.currentFilteredData = [];
+            const trashData = [];
+            let total = 0, dropouts = 0;
+            let villageMap = {}, genderMap = { "Boy": 0, "Girl": 0 }, classMap = { "Nursery": 0, "LKG": 0, "UKG": 0, "1st": 0, "2nd": 0, "3rd": 0, "4th": 0, "5th": 0 };
+
+            allSurveys.forEach(d => {
+                if (d.isDeleted) { trashData.push(d); return; }
+                if (search && !d.studentName.toLowerCase().includes(search)) return;
+                if (vil && d.village !== vil) return;
+                if (cls && d.class !== cls) return;
+                if (status && d.status !== status) return;
+
+                window.currentFilteredData.push(d);
+
+                total++;
+                if (d.status === 'Dropout') dropouts++;
+                const vName = d.village || "Unknown";
+                villageMap[vName] = (villageMap[vName] || 0) + 1;
+                if (d.gender) genderMap[d.gender] = (genderMap[d.gender] || 0) + 1;
+                if (classMap[d.class] !== undefined) classMap[d.class]++;
+            });
+
+            document.getElementById('totalCount').innerText = total;
+            document.getElementById('dropoutCount').innerText = dropouts;
+            document.getElementById('villageCount').innerText = Object.keys(villageMap).length;
+
+            renderActiveTable(window.currentFilteredData);
+            renderTrashTable(trashData);
+            renderCharts(classMap, villageMap, genderMap);
+        }
+
+        // --- Excel Export & Preview ---
+        window.openPreviewModal = function() {
+            if(window.currentFilteredData.length === 0) {
+                window.showToast("No data to export!", "error");
+                return;
+            }
+            
+            const thead = document.getElementById('previewTableHead');
+            const tbody = document.getElementById('previewTableBody');
+            
+            thead.innerHTML = `
+                <th class="px-4 py-2 text-left font-semibold">Name</th>
+                <th class="px-4 py-2 text-left font-semibold">Age</th>
+                <th class="px-4 py-2 text-left font-semibold">Gender</th>
+                <th class="px-4 py-2 text-left font-semibold">Village</th>
+                <th class="px-4 py-2 text-left font-semibold">Class</th>
+                <th class="px-4 py-2 text-left font-semibold">Phone</th>
+            `;
+            
+            tbody.innerHTML = window.currentFilteredData.map(d => `
+                <tr class="hover:bg-slate-100">
+                    <td class="px-4 py-2">${d.studentName}</td>
+                    <td class="px-4 py-2">${d.age}</td>
+                    <td class="px-4 py-2">${d.gender}</td>
+                    <td class="px-4 py-2">${d.village}</td>
+                    <td class="px-4 py-2">${d.class}</td>
+                    <td class="px-4 py-2">${d.phone}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('excelModal').classList.remove('hidden');
+        }
+
+        window.closePreviewModal = function() {
+            document.getElementById('excelModal').classList.add('hidden');
+        }
+
+        window.executeExcelExport = function() {
+            // Clean data format for Excel
+            const exportFormat = window.currentFilteredData.map(d => ({
+                "Student Name": d.studentName,
+                "Age": d.age,
+                "Gender": d.gender,
+                "Village": d.village,
+                "Admission Class": d.class,
+                "Guardian Name": d.parentName,
+                "Primary Phone": d.phone,
+                "Alternate Phone": d.altPhone || "-",
+                "Education Status": d.status
+            }));
+
+            const ws = XLSX.utils.json_to_sheet(exportFormat);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Survey Data");
+            XLSX.writeFile(wb, "YES_Academy_Survey.xlsx");
+            
+            window.showToast("Excel File Downloaded!", "success");
+            window.closePreviewModal();
+        }
+
+        // --- Render Tables & Edit/Trash logic ---
+        function renderActiveTable(data) {
+            const tbody = document.getElementById('activeDataTable');
+            tbody.innerHTML = data.map(d => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-4 py-3 font-medium text-slate-800">${d.studentName}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.age} / ${d.gender}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.village}</td>
+                    <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md text-xs font-semibold">${d.class}</span></td>
+                    <td class="px-4 py-3 text-slate-600">${d.phone}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.status}</td>
+                    <td class="px-4 py-3 flex justify-center gap-2">
+                        <button onclick="window.editEntry('${d.id}')" class="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="window.moveToTrash('${d.id}')" class="p-1.5 bg-rose-50 text-rose-600 rounded hover:bg-rose-100"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderTrashTable(data) {
+            const tbody = document.getElementById('trashDataTable');
+            tbody.innerHTML = data.map(d => `
+                <tr class="hover:bg-rose-50/50">
+                    <td class="px-4 py-3 font-medium text-slate-800">${d.studentName}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.village}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.class}</td>
+                    <td class="px-4 py-3 flex justify-center gap-2">
+                        <button onclick="window.restoreFromTrash('${d.id}')" class="p-1.5 bg-emerald-50 text-emerald-600 rounded hover:bg-emerald-100 text-xs font-semibold flex items-center gap-1"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Restore</button>
+                        <button onclick="window.permanentDelete('${d.id}')" class="p-1.5 bg-rose-100 text-rose-700 rounded hover:bg-rose-200 text-xs font-semibold flex items-center gap-1"><i data-lucide="x-circle" class="w-4 h-4"></i> Delete Forever</button>
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        window.editEntry = function(id) {
+            const data = allSurveys.find(s => s.id === id);
+            if(!data) return;
+            document.getElementById('editDocId').value = data.id;
+            document.getElementById('studentName').value = data.studentName;
+            document.getElementById('age').value = data.age;
+            document.getElementById('village').value = data.village;
+            document.getElementById('class').value = data.class;
+            document.getElementById('parentName').value = data.parentName;
+            document.getElementById('phone').value = data.phone;
+            document.getElementById('altPhone').value = data.altPhone || "";
+            document.getElementById('status').value = data.status;
+            if(data.gender === "Boy") document.getElementById('genderBoy').checked = true;
+            else document.getElementById('genderGirl').checked = true;
+            document.getElementById('submitBtn').innerHTML = `<i data-lucide="edit" class="w-5 h-5"></i> Update Entry`;
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+            window.handleTabClick('survey');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        window.moveToTrash = async function(id) {
+            if(!confirm("Move to trash?")) return;
+            await updateDoc(doc(db, "surveys", id), { isDeleted: true });
+            window.loadDashboardData();
+        }
+        window.restoreFromTrash = async function(id) {
+            await updateDoc(doc(db, "surveys", id), { isDeleted: false });
+            window.loadDashboardData();
+        }
+        window.permanentDelete = async function(id) {
+            if(!confirm("Permanently delete?")) return;
+            await deleteDoc(doc(db, "surveys", id));
+            window.loadDashboardData();
+        }
+
+        // --- Charts ---
+        let cChart, vChart, gChart; 
+        function renderCharts(classData, villageData, genderData) {
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            if (cChart) cChart.destroy(); 
+            cChart = new Chart(document.getElementById('classChart'), { type: 'bar', data: { labels: Object.keys(classData), datasets: [{ data: Object.values(classData), backgroundColor: '#6366f1', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            if (vChart) vChart.destroy();
+            vChart = new Chart(document.getElementById('villageChart'), { type: 'doughnut', data: { labels: Object.keys(villageData), datasets: [{ data: Object.values(villageData), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '60%', plugins: { legend: { position: 'right' } } } });
+            if (gChart) gChart.destroy();
+            gChart = new Chart(document.getElementById('genderChart'), { type: 'pie', data: { labels: Object.keys(genderData), datasets: [{ data: Object.values(genderData), backgroundColor: ['#3b82f6', '#ec4899'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+        }
+
+        window.renderUIState();
+    </script>
+</body>
+</html>
