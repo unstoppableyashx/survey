@@ -77,7 +77,7 @@
 
   <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
 
-    
+
 
     <section id="login-section" class="max-w-md mx-auto hidden animate-fade-in pt-10">
       <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-8">
@@ -113,7 +113,9 @@
     <section id="dashboard-section" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
         <div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">Dashboard & Data <span id="dashUserBadge" class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold hidden"></span></h2>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">Dashboard & Data <span
+              id="dashUserBadge"
+              class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold hidden"></span></h2>
           <p class="text-slate-500 text-sm sm:text-base mt-1">Manage, filter, export, and control access.</p>
         </div>
         <div class="flex flex-wrap gap-2">
@@ -133,91 +135,98 @@
         </div>
       </div>
 
-            <div class="flex gap-6 border-b border-slate-200 overflow-x-auto whitespace-nowrap pb-1">
-        <button onclick="switchDashTab('surveyFormTab')" id="tab-surveyFormTab" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
+      <div class="flex gap-6 border-b border-slate-200 overflow-x-auto whitespace-nowrap pb-1">
+        <button onclick="switchDashTab('surveyFormTab')" id="tab-surveyFormTab"
+          class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
           <i data-lucide="clipboard-list" class="w-4 h-4"></i> Take Survey
         </button>
-        <button onclick="switchDashTab('analytics')" id="tab-analytics" class="tab-btn active pb-2 px-1 text-slate-500 flex items-center gap-2">
+        <button onclick="switchDashTab('analytics')" id="tab-analytics"
+          class="tab-btn active pb-2 px-1 text-slate-500 flex items-center gap-2">
           <i data-lucide="bar-chart-2" class="w-4 h-4"></i> Analytics
         </button>
-        <button onclick="switchDashTab('data')" id="tab-data" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
+        <button onclick="switchDashTab('data')" id="tab-data"
+          class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
           <i data-lucide="database" class="w-4 h-4"></i> View Data
         </button>
-        <button onclick="switchDashTab('surveyors')" id="tab-surveyors" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2 hidden">
-          <i data-lucide="user-plus" class="w-4 h-4"></i> Create Surveyor <i data-lucide="lock" class="w-3 h-3 text-rose-500"></i>
+        <button onclick="switchDashTab('surveyors')" id="tab-surveyors"
+          class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2 hidden">
+          <i data-lucide="user-plus" class="w-4 h-4"></i> Create Surveyor <i data-lucide="lock"
+            class="w-3 h-3 text-rose-500"></i>
         </button>
-        <button onclick="switchDashTab('trash')" id="tab-trash" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
+        <button onclick="switchDashTab('trash')" id="tab-trash"
+          class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
           <i data-lucide="trash-2" class="w-4 h-4"></i> Trash Bin
         </button>
-        <button onclick="window.openDeviceTab()" id="tab-devices" class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2 ml-auto hidden">
-          <i data-lucide="smartphone" class="w-4 h-4"></i> Device Info <i data-lucide="lock" class="w-3 h-3 text-rose-500"></i>
+        <button onclick="window.openDeviceTab()" id="tab-devices"
+          class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2 ml-auto hidden">
+          <i data-lucide="smartphone" class="w-4 h-4"></i> Device Info <i data-lucide="lock"
+            class="w-3 h-3 text-rose-500"></i>
         </button>
       </div>
 
-      <div id="content-surveyFormTab" class="hidden space-y-4 animate-fade-in"><div class="max-w-2xl mx-auto">
-      <div class="mb-6">
-        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">New Student Entry</h2>
-        <p class="text-slate-500 text-sm sm:text-base mt-1">Collect details during the village survey.
-        </p>
-      </div>
+      <div id="content-surveyFormTab" class="hidden space-y-4 animate-fade-in">
+        <div class="max-w-2xl mx-auto">
+          <div class="mb-6">
+            <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">New Student Entry 2026-27</h2>
+            <p class="text-slate-500 text-sm sm:text-base mt-1">Collect details during the village survey.
+            </p>
+          </div>
 
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
-        <form id="surveyForm" class="space-y-6">
-          <input type="hidden" id="editDocId">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-sm font-semibold text-slate-700">Student Name</label>
-              <input type="text" id="studentName" placeholder="Enter full name"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                required>
-            </div>
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+            <form id="surveyForm" class="space-y-6">
+              <input type="hidden" id="editDocId">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="space-y-1.5 sm:col-span-2">
+                  <label class="text-sm font-semibold text-slate-700">Student Name</label>
+                  <input type="text" id="studentName" placeholder="Enter full name"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    required>
+                </div>
 
-            <div class="space-y-1.5">
-              <label class="text-sm font-semibold text-slate-700">Age</label>
-              <input type="number" id="age" placeholder="Student's age"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                required>
-            </div>
+                <div class="space-y-1.5">
+                  <label class="text-sm font-semibold text-slate-700">Age</label>
+                  <select id="age"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+                    required>
+                    <option value="" disabled selected>Select Age</option>
+                    <option value="04">04</option>
+                    <option value="05">05</option>
+                    <option value="06">06</option>
+                    <option value="07">07</option>
+                    <option value="08">08</option>
+                    <option value="09">09</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    <option value="13">13</option>
 
-            <div class="space-y-1.5">
-              <label class="text-sm font-semibold text-slate-700">Gender</label>
-              <div class="flex gap-4 mt-2">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="gender" id="genderBoy" value="Boy"
-                    class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
-                  <span class="text-sm text-slate-700">Boy</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input type="radio" name="gender" id="genderGirl" value="Girl"
-                    class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
-                  <span class="text-sm text-slate-700">Girl</span>
-                </label>
+                  </select>
+                </div>
               </div>
-            </div>
 
-            <div class="space-y-1.5">
-              <label class="text-sm font-semibold text-slate-700">Village</label>
-              <input type="text" id="village" placeholder="Village name"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                required>
-            </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-semibold text-slate-700">Gender</label>
+                <div class="flex gap-4 mt-2">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="gender" id="genderBoy" value="Boy"
+                      class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
+                    <span class="text-sm text-slate-700">Boy</span>
+                  </label>
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="gender" id="genderGirl" value="Girl"
+                      class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
+                    <span class="text-sm text-slate-700">Girl</span>
+                  </label>
+                </div>
+              </div>
 
-            <div class="space-y-1.5">
-              <label class="text-sm font-semibold text-slate-700">Admission Class</label>
-              <select id="class"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
-                required>
-                <option value="" disabled selected>Select class</option>
-                <option value="Nursery">Nursery</option>
-                <option value="LKG">LKG</option>
-                <option value="UKG">UKG</option>
-                <option value="1st">1st Grade</option>
-                <option value="2nd">2nd Grade</option>
-                <option value="3rd">3rd Grade</option>
-                <option value="4th">4th Grade</option>
-                <option value="5th">5th Grade</option>
-              </select>
-            </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-semibold text-slate-700">Village</label>
+                <input type="text" id="village" placeholder="Village name"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                  required>
+              </div>
+
           </div>
 
           <hr class="border-slate-100">
@@ -238,7 +247,9 @@
 
             <div class="space-y-1.5 sm:col-span-2">
               <label class="text-sm font-semibold text-slate-700">Relationship with Guardian</label>
-              <select id="guardianRelation" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white" required>
+              <select id="guardianRelation"
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+                required>
                 <option value="Father">Father</option>
                 <option value="Mother">Mother</option>
                 <option value="Brother">Brother</option>
@@ -247,7 +258,7 @@
                 <option value="Other">Other</option>
               </select>
             </div>
-            
+
             <div class="space-y-1.5">
               <label class="text-sm font-semibold text-slate-700">Primary Phone</label>
               <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" pattern="[0-9]{10}"
@@ -265,12 +276,53 @@
 
           <div class="space-y-1.5">
             <label class="text-sm font-semibold text-slate-700">Current Education Status</label>
-            <select id="status"
+            <select id="status" onchange="window.toggleSchoolFields()"
               class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
               required>
+              <option value="" disabled selected>Select Status</option>
               <option value="Currently Studying">Currently Studying (Other School)</option>
               <option value="Dropout">Dropout (Left School)</option>
               <option value="Never Enrolled">Never Enrolled (Fresher)</option>
+            </select>
+          </div>
+
+          <div id="currentSchoolFields" class="grid grid-cols-1 sm:grid-cols-2 gap-5 hidden mt-5">
+              <div class="space-y-1.5">
+                <label class="text-sm font-semibold text-slate-700">Current Class</label>
+                <select id="class"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white">
+                  <option value="" disabled selected>Select class</option>
+                  <option value="Nursery">Nursery</option>
+                  <option value="LKG">LKG</option>
+                  <option value="UKG">UKG</option>
+                  <option value="1st">1st Grade</option>
+                  <option value="2nd">2nd Grade</option>
+                  <option value="3rd">3rd Grade</option>
+                  <option value="4th">4th Grade</option>
+                  <option value="5th">5th Grade</option>
+                </select>
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-sm font-semibold text-slate-700">School Name</label>
+                <input type="text" id="school" placeholder="Enter school name"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+              </div>
+          </div>
+
+          <div class="space-y-1.5 mt-5">
+            <label class="text-sm font-semibold text-slate-700">Admission Class (For Y.E.S. Academy)</label>
+            <select id="admissionClass"
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+              required>
+              <option value="" disabled selected>Select Admission Class</option>
+              <option value="Nursery">Nursery</option>
+              <option value="LKG">LKG</option>
+              <option value="UKG">UKG</option>
+              <option value="1st">1st Grade</option>
+              <option value="2nd">2nd Grade</option>
+              <option value="3rd">3rd Grade</option>
+              <option value="4th">4th Grade</option>
+              <option value="5th">5th Grade</option>
             </select>
           </div>
 
@@ -283,12 +335,14 @@
             class="hidden w-full mt-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
             Cancel Edit
           </button>
-        </form>
+          </form>
+        </div>
       </div>
-    </div></div>
+      </div>
 
       <div id="content-surveyors" class="hidden space-y-4 animate-fade-in">
-        <div class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div
+          class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
           <div class="flex items-center gap-3">
             <i data-lucide="users" class="w-6 h-6 text-indigo-600"></i>
             <div>
@@ -297,23 +351,26 @@
             </div>
           </div>
         </div>
-        
+
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8 max-w-2xl mx-auto mt-6">
           <form id="createSurveyorForm" class="space-y-5">
             <div class="space-y-1.5">
               <label class="text-sm font-semibold text-slate-700">Surveyor Name</label>
               <input type="text" id="newSurveyorName" placeholder="John Doe"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                required>
             </div>
             <div class="space-y-1.5">
               <label class="text-sm font-semibold text-slate-700">Surveyor Email</label>
               <input type="email" id="newSurveyorEmail" placeholder="agent@example.com"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                required>
             </div>
             <div class="space-y-1.5">
               <label class="text-sm font-semibold text-slate-700">Password</label>
               <input type="password" id="newSurveyorPassword" placeholder="••••••••" minlength="6"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" required>
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                required>
             </div>
             <button type="submit" id="createSurveyorBtn"
               class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all flex justify-center items-center gap-2">
@@ -323,20 +380,20 @@
         </div>
 
         <div class="mt-8 border-t border-slate-200 pt-6 max-w-4xl mx-auto">
-           <h3 class="font-bold text-lg text-slate-800 mb-4">Surveyor Directory</h3>
-           <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
-             <table class="min-w-full divide-y divide-slate-200 text-sm">
-               <thead class="bg-slate-50 text-slate-600">
-                 <tr>
-                   <th class="px-4 py-3 text-left font-semibold">Surveyor Name</th>
-                   <th class="px-4 py-3 text-left font-semibold">Email</th>
-                   <th class="px-4 py-3 text-left font-semibold">Surveys Done</th>
-                   <th class="px-4 py-3 text-center font-semibold">Actions</th>
-                 </tr>
-               </thead>
-               <tbody id="surveyorsTableBody" class="divide-y divide-slate-200"></tbody>
-             </table>
-           </div>
+          <h3 class="font-bold text-lg text-slate-800 mb-4">Surveyor Directory</h3>
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200 text-sm">
+              <thead class="bg-slate-50 text-slate-600">
+                <tr>
+                  <th class="px-4 py-3 text-left font-semibold">Surveyor Name</th>
+                  <th class="px-4 py-3 text-left font-semibold">Email</th>
+                  <th class="px-4 py-3 text-left font-semibold">Surveys Done</th>
+                  <th class="px-4 py-3 text-center font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="surveyorsTableBody" class="divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -409,7 +466,9 @@
             onchange="window.applyFilters()">
             <option value="">All Villages</option>
           </select>
-          <select id="filterGender" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white" onchange="window.applyFilters()">
+          <select id="filterGender"
+            class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white"
+            onchange="window.applyFilters()">
             <option value="">All Genders</option>
             <option value="Boy">Boys</option>
             <option value="Girl">Girls</option>
@@ -446,7 +505,9 @@
                 <th class="px-4 py-3 text-left font-semibold">Father Name</th>
                 <th class="px-4 py-3 text-left font-semibold">Guardian (Rel)</th>
                 <th class="px-4 py-3 text-left font-semibold">Village</th>
-                <th class="px-4 py-3 text-left font-semibold">Class</th>
+                <th class="px-4 py-3 text-left font-semibold">Adm Class</th>
+                <th class="px-4 py-3 text-left font-semibold">Curr Class</th>
+                <th class="px-4 py-3 text-left font-semibold">School</th>
                 <th class="px-4 py-3 text-left font-semibold">Contact</th>
                 <th class="px-4 py-3 text-left font-semibold">Status</th>
                 <th class="px-4 py-3 text-center font-semibold">Actions</th>
@@ -580,13 +641,13 @@
     window.renderUIState = function () {
       const tabDevicesBtn = document.getElementById('tab-devices');
       const tabSurveyorsBtn = document.getElementById('tab-surveyors');
-      
+
       if (window.firebaseUser && window.firebaseUser.email === 'yashsharmaup2008@gmail.com') {
-        if(tabDevicesBtn) tabDevicesBtn.classList.remove('hidden');
-        if(tabSurveyorsBtn) tabSurveyorsBtn.classList.remove('hidden');
+        if (tabDevicesBtn) tabDevicesBtn.classList.remove('hidden');
+        if (tabSurveyorsBtn) tabSurveyorsBtn.classList.remove('hidden');
       } else {
-        if(tabDevicesBtn) tabDevicesBtn.classList.add('hidden');
-        if(tabSurveyorsBtn) tabSurveyorsBtn.classList.add('hidden');
+        if (tabDevicesBtn) tabDevicesBtn.classList.add('hidden');
+        if (tabSurveyorsBtn) tabSurveyorsBtn.classList.add('hidden');
       }
     }
 
@@ -609,6 +670,24 @@
         localStorage.setItem('survey_local_device', id);
       }
       return id;
+    }
+
+    window.toggleSchoolFields = function () {
+      const statusObj = document.getElementById('status');
+      const schoolFields = document.getElementById('currentSchoolFields');
+      const classInput = document.getElementById('class');
+      const schoolInput = document.getElementById('school');
+      if (statusObj && statusObj.value === 'Currently Studying') {
+        if(schoolFields) schoolFields.classList.remove('hidden');
+        if(classInput) classInput.required = true;
+        if(schoolInput) schoolInput.required = true;
+      } else {
+        if(schoolFields) schoolFields.classList.add('hidden');
+        if(classInput) classInput.required = false;
+        if(schoolInput) schoolInput.required = false;
+        if(classInput) classInput.value = "";
+        if(schoolInput) schoolInput.value = "";
+      }
     }
   </script>
 
@@ -637,26 +716,26 @@
     onAuthStateChanged(auth, async (user) => {
       window.firebaseUser = user;
       window.loggedInName = "";
-      
+
       const loginSec = document.getElementById('login-section');
       const dashSec = document.getElementById('dashboard-section');
       const badge = document.getElementById('dashUserBadge');
-      
+
       if (user) {
-        if(user.email === 'yashsharmaup2008@gmail.com') {
+        if (user.email === 'yashsharmaup2008@gmail.com') {
           window.loggedInName = "Super Admin";
         } else {
           try {
-             const uDoc = await getDoc(doc(db, "users", user.uid));
-             if(uDoc.exists()) window.loggedInName = uDoc.data().name || "Surveyor";
-          } catch(e) {}
+            const uDoc = await getDoc(doc(db, "users", user.uid));
+            if (uDoc.exists()) window.loggedInName = uDoc.data().name || "Surveyor";
+          } catch (e) { }
         }
-        
-        if(badge && window.loggedInName) {
-           badge.innerText = "Logged in as: " + window.loggedInName;
-           badge.classList.remove('hidden');
+
+        if (badge && window.loggedInName) {
+          badge.innerText = "Logged in as: " + window.loggedInName;
+          badge.classList.remove('hidden');
         }
-        
+
         await checkAndRegisterDevice();
         loginSec.classList.add('hidden');
         dashSec.classList.remove('hidden');
@@ -665,7 +744,7 @@
       } else {
         loginSec.classList.remove('hidden');
         dashSec.classList.add('hidden');
-        if(badge) badge.classList.add('hidden');
+        if (badge) badge.classList.add('hidden');
       }
       window.renderUIState();
     });
@@ -738,26 +817,26 @@
       const pw = document.getElementById('newSurveyorPassword').value;
       const btn = document.getElementById('createSurveyorBtn');
       const ogText = btn.innerHTML;
-      
+
       btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Processing...';
       btn.disabled = true;
       lucide.createIcons();
-      
+
       try {
         const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, pw);
         const newSurveyorId = userCred.user.uid;
-        
+
         await setDoc(doc(db, "users", newSurveyorId), {
-           email: email,
-           name: nameInfo,
-           role: 'surveyor',
-           createdAt: new Date()
+          email: email,
+          name: nameInfo,
+          role: 'surveyor',
+          createdAt: new Date()
         });
-        
+
         window.showToast("Surveyor Account Created!", "success");
         document.getElementById('createSurveyorForm').reset();
         await signOut(secondaryAuth);
-      } catch(err) {
+      } catch (err) {
         window.showToast(err.message, "error");
       } finally {
         btn.innerHTML = ogText;
@@ -864,7 +943,9 @@
         age: parseInt(document.getElementById('age').value),
         gender: document.querySelector('input[name="gender"]:checked').value,
         village: document.getElementById('village').value.trim().toUpperCase(),
-        class: document.getElementById('class').value,
+        class: document.getElementById('class') ? document.getElementById('class').value : "",
+        school: document.getElementById('school') ? document.getElementById('school').value.trim() : "",
+        admissionClass: document.getElementById('admissionClass').value,
         fatherName: document.getElementById('fatherName').value.trim(),
         parentName: document.getElementById('parentName').value.trim(),
         guardianRelation: document.getElementById('guardianRelation').value,
@@ -903,33 +984,34 @@
     window.cancelEdit = function () {
       document.getElementById('surveyForm').reset();
       document.getElementById('editDocId').value = "";
+      window.toggleSchoolFields();
       document.getElementById('submitBtn').innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> Save Survey Data`;
       document.getElementById('cancelEditBtn').classList.add('hidden');
       lucide.createIcons();
     }
 
     // --- Dashboard & Excel Logic ---
-    window.loadSurveyorsList = async function() {
-      if(window.firebaseUser.email !== 'yashsharmaup2008@gmail.com') return;
+    window.loadSurveyorsList = async function () {
+      if (window.firebaseUser.email !== 'yashsharmaup2008@gmail.com') return;
       try {
         const uSnap = await getDocs(collection(db, "users"));
         let surveyorsMap = {};
         uSnap.forEach(doc => {
-           const d = doc.data();
-           if(d.role === "surveyor") {
-              surveyorsMap[doc.id] = { id: doc.id, name: d.name || "Unknown", email: d.email || "-", count: 0 };
-           }
+          const d = doc.data();
+          if (d.role === "surveyor") {
+            surveyorsMap[doc.id] = { id: doc.id, name: d.name || "Unknown", email: d.email || "-", count: 0 };
+          }
         });
-        
+
         // Count surveys
         const sSnap = await getDocs(collection(db, "surveys"));
         sSnap.forEach(s => {
-           let by = s.data().createdBy;
-           if(by && surveyorsMap[by]) {
-              surveyorsMap[by].count++;
-           }
+          let by = s.data().createdBy;
+          if (by && surveyorsMap[by]) {
+            surveyorsMap[by].count++;
+          }
         });
-        
+
         const tbody = document.getElementById('surveyorsTableBody');
         tbody.innerHTML = Object.values(surveyorsMap).map(s => `
           <tr class="hover:bg-slate-50">
@@ -942,16 +1024,16 @@
           </tr>
         `).join('');
         lucide.createIcons();
-      } catch(e) { console.error(e); }
+      } catch (e) { console.error(e); }
     }
-    
-        window.deleteSurveyor = async function(id) {
-      if(!confirm("Are you sure you want to delete this surveyor? They will lose access.")) return;
+
+    window.deleteSurveyor = async function (id) {
+      if (!confirm("Are you sure you want to delete this surveyor? They will lose access.")) return;
       try {
         await deleteDoc(doc(db, "users", id));
         window.showToast("Surveyor mapping deleted.", "success");
         window.loadSurveyorsList();
-      } catch(e) {
+      } catch (e) {
         window.showToast("Failed to delete", "error");
       }
     }
@@ -969,7 +1051,7 @@
         });
         populateFilters();
         window.applyFilters();
-        if(isAdmin) window.loadSurveyorsList();
+        if (isAdmin) window.loadSurveyorsList();
       } catch (error) {
         window.showToast("Failed to load data.", "error");
       }
@@ -997,20 +1079,30 @@
 
       allSurveys.forEach(d => {
         if (d.isDeleted) { trashData.push(d); return; }
-        if (search && !d.studentName.toLowerCase().includes(search)) return;
-        if (vil && d.village !== vil) return;
-        if (cls && d.class !== cls) return;
-        if (status && d.status !== status) return;
-        if (genderFilter && d.gender !== genderFilter) return;
+        
+        const sName = (d.studentName || "").toLowerCase();
+        const dVillage = d.village || "";
+        const dClass = d.class || "";
+        const dAdmClass = d.admissionClass || d.class || ""; // Fallback for old data
+        const dStatus = d.status || "";
+        const dGender = d.gender || "";
+
+        if (search && !sName.includes(search)) return;
+        if (vil && dVillage !== vil) return;
+        if (cls && dAdmClass !== cls) return; // Filter by Admission Class
+        if (status && dStatus !== status) return;
+        if (genderFilter && dGender !== genderFilter) return;
 
         window.currentFilteredData.push(d);
 
         total++;
-        if (d.status === 'Dropout') dropouts++;
-        const vName = d.village || "Unknown";
+        if (dStatus === 'Dropout') dropouts++;
+        const vName = dVillage || "Unknown";
         villageMap[vName] = (villageMap[vName] || 0) + 1;
-        if (d.gender) genderMap[d.gender] = (genderMap[d.gender] || 0) + 1;
-        if (classMap[d.class] !== undefined) classMap[d.class]++;
+        if (dGender) genderMap[dGender] = (genderMap[dGender] || 0) + 1;
+        
+        // Count by Admission Class for chart
+        if (classMap[dAdmClass] !== undefined) classMap[dAdmClass]++;
       });
 
       document.getElementById('totalCount').innerText = total;
@@ -1034,27 +1126,31 @@
 
       thead.innerHTML = `
                 <th class="px-4 py-2 text-left font-semibold">Name</th>
-                                <th class="px-4 py-2 text-left font-semibold">Age</th>
+                <th class="px-4 py-2 text-left font-semibold">Age</th>
                 <th class="px-4 py-2 text-left font-semibold">Gender</th>
                 <th class="px-4 py-2 text-left font-semibold">Father Name</th>
                 <th class="px-4 py-2 text-left font-semibold">Guardian Name</th>
                 <th class="px-4 py-2 text-left font-semibold">Relation</th>
                 <th class="px-4 py-2 text-left font-semibold">Village</th>
-                <th class="px-4 py-2 text-left font-semibold">Class</th>
+                <th class="px-4 py-2 text-left font-semibold">Adm Class</th>
+                <th class="px-4 py-2 text-left font-semibold">Curr Class</th>
+                <th class="px-4 py-2 text-left font-semibold">School</th>
                 <th class="px-4 py-2 text-left font-semibold">Phone(s)</th>
             `;
 
       tbody.innerHTML = window.currentFilteredData.map(d => `
                 <tr class="hover:bg-slate-100">
-                    <td class="px-4 py-2">${d.studentName}</td>
-                                        <td class="px-4 py-2">${d.age}</td>
-                    <td class="px-4 py-2">${d.gender}</td>
+                    <td class="px-4 py-2">${d.studentName || "-"}</td>
+                    <td class="px-4 py-2">${d.age || "-"}</td>
+                    <td class="px-4 py-2">${d.gender || "-"}</td>
                     <td class="px-4 py-2">${d.fatherName || "-"}</td>
                     <td class="px-4 py-2">${d.parentName || "-"}</td>
                     <td class="px-4 py-2">${d.guardianRelation || "-"}</td>
-                    <td class="px-4 py-2">${d.village}</td>
-                    <td class="px-4 py-2">${d.class}</td>
-                    <td class="px-4 py-2">${d.phone} <span class="text-slate-400">/ ${d.altPhone || '-'}</span></td>
+                    <td class="px-4 py-2">${d.village || "-"}</td>
+                    <td class="px-4 py-2">${d.admissionClass || d.class || "-"}</td>
+                    <td class="px-4 py-2">${d.class || "-"}</td>
+                    <td class="px-4 py-2">${d.school || "-"}</td>
+                    <td class="px-4 py-2">${d.phone || "-"} <span class="text-slate-400">/ ${d.altPhone || '-'}</span></td>
                 </tr>
             `).join('');
 
@@ -1068,18 +1164,20 @@
     window.executeExcelExport = function () {
       // Clean data format for Excel
       const exportFormat = window.currentFilteredData.map(d => ({
-        "Student Name": d.studentName,
-        "Age": d.age,
-        "Gender": d.gender,
-        "Village": d.village,
-        "Admission Class": d.class,
+        "Student Name": d.studentName || "-",
+        "Age": d.age || "-",
+        "Gender": d.gender || "-",
+        "Village": d.village || "-",
+        "Admission Class": d.admissionClass || d.class || "-",
+        "Current Class": d.class || "-",
+        "School": d.school || "-",
         "Father Name": d.fatherName || "-",
         "Guardian Name": d.parentName || "-",
         "Relation": d.guardianRelation || "-",
-        "Primary Phone": d.phone,
+        "Primary Phone": d.phone || "-",
         "Entered By": d.creatorName || "-",
         "Alternate Phone": d.altPhone || "-",
-        "Education Status": d.status
+        "Education Status": d.status || "-"
       }));
 
       const ws = XLSX.utils.json_to_sheet(exportFormat);
@@ -1096,14 +1194,16 @@
       const tbody = document.getElementById('activeDataTable');
       tbody.innerHTML = data.map(d => `
                 <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-4 py-3 font-medium text-slate-800">${d.studentName}</td>
-                    <td class="px-4 py-3 text-slate-600">${d.age} / ${d.gender}</td>
+                    <td class="px-4 py-3 font-medium text-slate-800">${d.studentName || "-"}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.age || "?"} / ${d.gender || "?"}</td>
                     <td class="px-4 py-3 text-slate-600 text-xs">${d.fatherName || "-"}</td>
                     <td class="px-4 py-3 text-slate-600 text-xs">${d.parentName || "-"} (${d.guardianRelation || "-"})</td>
-                    <td class="px-4 py-3 text-slate-600">${d.village}</td>
-                    <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md text-xs font-semibold">${d.class}</span></td>
-                    <td class="px-4 py-3 text-slate-600">${d.phone}<br><span class="text-xs text-slate-400 font-semibold opacity-75">${d.altPhone || '-'}</span></td>
-                    <td class="px-4 py-3 text-slate-600">${d.status}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.village || "-"}</td>
+                    <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md text-xs font-semibold">${d.admissionClass || d.class || "-"}</span></td>
+                    <td class="px-4 py-3 text-slate-600"><span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md text-xs font-semibold">${d.class || "-"}</span></td>
+                    <td class="px-4 py-3 text-slate-600">${d.school || "-"}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.phone || "-"}<br><span class="text-xs text-slate-400 font-semibold opacity-75">${d.altPhone || '-'}</span></td>
+                    <td class="px-4 py-3 text-slate-600">${d.status || "-"}</td>
                     <td class="px-4 py-3 flex justify-center gap-2">
                         <a href="admission.html?id=${d.id}" target="_blank" class="p-1.5 bg-purple-50 text-purple-600 rounded hover:bg-purple-100 flex items-center justify-center" title="Admit Student"><i data-lucide="printer" class="w-4 h-4"></i></a>
                         <button onclick="window.editEntry('${d.id}')" class="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100" title="Edit Student"><i data-lucide="edit" class="w-4 h-4"></i></button>
@@ -1134,18 +1234,23 @@
       const data = allSurveys.find(s => s.id === id);
       if (!data) return;
       document.getElementById('editDocId').value = data.id;
-      document.getElementById('studentName').value = data.studentName;
-      document.getElementById('age').value = data.age;
-      document.getElementById('village').value = data.village;
-      document.getElementById('class').value = data.class;
-      document.getElementById('parentName').value = data.parentName;
+      document.getElementById('studentName').value = data.studentName || "";
+      document.getElementById('age').value = data.age || "";
+      document.getElementById('village').value = data.village || "";
+      document.getElementById('parentName').value = data.parentName || "";
       document.getElementById('fatherName').value = data.fatherName || '';
       document.getElementById('guardianRelation').value = data.guardianRelation || 'Father';
-      document.getElementById('phone').value = data.phone;
+      document.getElementById('phone').value = data.phone || "";
       document.getElementById('altPhone').value = data.altPhone || "";
-      document.getElementById('status').value = data.status;
+      document.getElementById('status').value = data.status || "";
+      document.getElementById('admissionClass').value = data.admissionClass || data.class || "";
+      window.toggleSchoolFields();
+      if(data.status === 'Currently Studying') {
+        document.getElementById('class').value = data.class || '';
+        document.getElementById('school').value = data.school || '';
+      }
       if (data.gender === "Boy") document.getElementById('genderBoy').checked = true;
-      else document.getElementById('genderGirl').checked = true;
+      else if (data.gender === "Girl") document.getElementById('genderGirl').checked = true;
       document.getElementById('submitBtn').innerHTML = `<i data-lucide="edit" class="w-5 h-5"></i> Update Entry`;
       document.getElementById('cancelEditBtn').classList.remove('hidden');
       window.switchDashTab('surveyFormTab');
