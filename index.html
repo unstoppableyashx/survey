@@ -37,7 +37,6 @@
         transform: translateX(100%);
         opacity: 0;
       }
-
       to {
         transform: translateX(0);
         opacity: 1;
@@ -48,7 +47,6 @@
       animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
-    /* Modal Animation */
     .modal-bg {
       backdrop-filter: blur(4px);
       transition: opacity 0.3s;
@@ -57,6 +55,13 @@
 </head>
 
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col relative">
+
+  <div id="globalLoader" class="fixed inset-0 bg-slate-900/30 z-[200] hidden flex items-center justify-center backdrop-blur-sm transition-all">
+    <div class="bg-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+      <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-indigo-600"></i>
+      <span class="font-bold text-slate-800 text-lg">Fetching database...</span>
+    </div>
+  </div>
 
   <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -69,15 +74,11 @@
             Y.E.S. <span class="text-indigo-600">ACADEMY</span>
           </span>
         </div>
-
-        <div class="flex gap-2 sm:gap-4"></div>
       </div>
     </div>
   </nav>
 
   <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-
-
 
     <section id="login-section" class="max-w-md mx-auto hidden animate-fade-in pt-10">
       <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-8">
@@ -148,6 +149,10 @@
           class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
           <i data-lucide="database" class="w-4 h-4"></i> View Data
         </button>
+        <button onclick="switchDashTab('admitted')" id="tab-admitted"
+          class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2">
+          <i data-lucide="user-check" class="w-4 h-4"></i> Admissions
+        </button>
         <button onclick="switchDashTab('surveyors')" id="tab-surveyors"
           class="tab-btn pb-2 px-1 text-slate-500 flex items-center gap-2 hidden">
           <i data-lucide="user-plus" class="w-4 h-4"></i> Create Surveyor <i data-lucide="lock"
@@ -168,8 +173,7 @@
         <div class="max-w-2xl mx-auto">
           <div class="mb-6">
             <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">New Student Entry 2026-27</h2>
-            <p class="text-slate-500 text-sm sm:text-base mt-1">Collect details during the village survey.
-            </p>
+            <p class="text-slate-500 text-sm sm:text-base mt-1">Collect details during the village survey.</p>
           </div>
 
           <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
@@ -199,99 +203,121 @@
                     <option value="11">11</option>
                     <option value="12">12</option>
                     <option value="13">13</option>
-
                   </select>
                 </div>
-              </div>
 
-              <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-700">Gender</label>
-                <div class="flex gap-4 mt-2">
-                  <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="gender" id="genderBoy" value="Boy"
-                      class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
-                    <span class="text-sm text-slate-700">Boy</span>
-                  </label>
-                  <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="gender" id="genderGirl" value="Girl"
-                      class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
-                    <span class="text-sm text-slate-700">Girl</span>
-                  </label>
+                <div class="space-y-1.5">
+                  <label class="text-sm font-semibold text-slate-700">Gender</label>
+                  <div class="flex gap-4 mt-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="gender" id="genderBoy" value="Boy"
+                        class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
+                      <span class="text-sm text-slate-700">Boy</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                      <input type="radio" name="gender" id="genderGirl" value="Girl"
+                        class="w-4 h-4 text-indigo-600 focus:ring-indigo-500" required>
+                      <span class="text-sm text-slate-700">Girl</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="space-y-1.5 sm:col-span-2">
+                  <label class="text-sm font-semibold text-slate-700">Village</label>
+                  <input type="text" id="village" placeholder="Village name"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    required>
                 </div>
               </div>
 
-              <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-700">Village</label>
-                <input type="text" id="village" placeholder="Village name"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                  required>
+              <hr class="border-slate-100">
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div class="space-y-1.5 sm:col-span-1">
+                  <label class="text-sm font-semibold text-slate-700">Father's Name</label>
+                  <input type="text" id="fatherName" placeholder="Father's full name" oninput="window.autoFillGuardian()"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    required>
+                </div>
+                <div class="space-y-1.5 sm:col-span-1">
+                  <label class="text-sm font-semibold text-slate-700">Guardian Name</label>
+                  <input type="text" id="parentName" placeholder="Local Guardian Name" oninput="window.markGuardianManual()"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    required>
+                </div>
+
+                <div class="space-y-1.5 sm:col-span-2">
+                  <label class="text-sm font-semibold text-slate-700">Relationship with Guardian</label>
+                  <select id="guardianRelation"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+                    required>
+                    <option value="Father">Father</option>
+                    <option value="Mother">Mother</option>
+                    <option value="Brother">Brother</option>
+                    <option value="Sister">Sister</option>
+                    <option value="Grandparent">Grandparent</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div class="space-y-1.5">
+                  <label class="text-sm font-semibold text-slate-700">Primary Phone</label>
+                  <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" pattern="[0-9]{10}"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    required>
+                </div>
+
+                <div class="space-y-1.5">
+                  <label class="text-sm font-semibold text-slate-700">Alternate Phone <span
+                      class="text-slate-400 font-normal">(Optional)</span></label>
+                  <input type="tel" id="altPhone" placeholder="Optional 10-digit number" maxlength="10" pattern="[0-9]{10}"
+                    class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+                </div>
               </div>
 
-          </div>
+              <hr class="border-slate-100">
 
-          <hr class="border-slate-100">
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div class="space-y-1.5 sm:col-span-1">
-              <label class="text-sm font-semibold text-slate-700">Father's Name</label>
-              <input type="text" id="fatherName" placeholder="Father's full name"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                required>
-            </div>
-            <div class="space-y-1.5 sm:col-span-1">
-              <label class="text-sm font-semibold text-slate-700">Guardian Name</label>
-              <input type="text" id="parentName" placeholder="Local Guardian Name"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                required>
-            </div>
-
-            <div class="space-y-1.5 sm:col-span-2">
-              <label class="text-sm font-semibold text-slate-700">Relationship with Guardian</label>
-              <select id="guardianRelation"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
-                required>
-                <option value="Father">Father</option>
-                <option value="Mother">Mother</option>
-                <option value="Brother">Brother</option>
-                <option value="Sister">Sister</option>
-                <option value="Grandparent">Grandparent</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-sm font-semibold text-slate-700">Primary Phone</label>
-              <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" pattern="[0-9]{10}"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                required>
-            </div>
-
-            <div class="space-y-1.5">
-              <label class="text-sm font-semibold text-slate-700">Alternate Phone <span
-                  class="text-slate-400 font-normal">(Optional)</span></label>
-              <input type="tel" id="altPhone" placeholder="Optional 10-digit number" maxlength="10" pattern="[0-9]{10}"
-                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
-            </div>
-          </div>
-
-          <div class="space-y-1.5">
-            <label class="text-sm font-semibold text-slate-700">Current Education Status</label>
-            <select id="status" onchange="window.toggleSchoolFields()"
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
-              required>
-              <option value="" disabled selected>Select Status</option>
-              <option value="Currently Studying">Currently Studying (Other School)</option>
-              <option value="Dropout">Dropout (Left School)</option>
-              <option value="Never Enrolled">Never Enrolled (Fresher)</option>
-            </select>
-          </div>
-
-          <div id="currentSchoolFields" class="grid grid-cols-1 sm:grid-cols-2 gap-5 hidden mt-5">
               <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-700">Current Class</label>
-                <select id="class"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white">
-                  <option value="" disabled selected>Select class</option>
+                <label class="text-sm font-semibold text-slate-700">Current Education Status</label>
+                <select id="status" onchange="window.toggleSchoolFields()"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+                  required>
+                  <option value="" disabled selected>Select Status</option>
+                  <option value="Currently Studying">Currently Studying (Other School)</option>
+                  <option value="Dropout">Dropout (Left School)</option>
+                  <option value="Never Enrolled">Never Enrolled (Fresher)</option>
+                </select>
+              </div>
+
+              <div id="currentSchoolFields" class="grid grid-cols-1 sm:grid-cols-2 gap-5 hidden mt-5">
+                  <div class="space-y-1.5">
+                    <label class="text-sm font-semibold text-slate-700">Current Class</label>
+                    <select id="class"
+                      class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white">
+                      <option value="" disabled selected>Select class</option>
+                      <option value="Nursery">Nursery</option>
+                      <option value="LKG">LKG</option>
+                      <option value="UKG">UKG</option>
+                      <option value="1st">1st Grade</option>
+                      <option value="2nd">2nd Grade</option>
+                      <option value="3rd">3rd Grade</option>
+                      <option value="4th">4th Grade</option>
+                      <option value="5th">5th Grade</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-sm font-semibold text-slate-700">School Name</label>
+                    <input type="text" id="school" placeholder="Enter school name"
+                      class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+                  </div>
+              </div>
+
+              <div class="space-y-1.5 mt-5">
+                <label class="text-sm font-semibold text-slate-700">Admission Class (For Y.E.S. Academy)</label>
+                <select id="admissionClass"
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+                  required>
+                  <option value="" disabled selected>Select Admission Class</option>
                   <option value="Nursery">Nursery</option>
                   <option value="LKG">LKG</option>
                   <option value="UKG">UKG</option>
@@ -302,47 +328,30 @@
                   <option value="5th">5th Grade</option>
                 </select>
               </div>
-              <div class="space-y-1.5">
-                <label class="text-sm font-semibold text-slate-700">School Name</label>
-                <input type="text" id="school" placeholder="Enter school name"
-                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
+
+              <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <button type="submit" id="submitBtn" onclick="window.isAddSibling = false"
+                  class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2">
+                  <i data-lucide="save" class="w-5 h-5"></i>
+                  Save Survey Data
+                </button>
+                <button type="submit" id="siblingBtn" onclick="window.isAddSibling = true"
+                  class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-200 transition-all flex justify-center items-center gap-2">
+                  <i data-lucide="user-plus" class="w-5 h-5"></i>
+                  Add Child
+                </button>
               </div>
+              <button type="button" id="cancelEditBtn" onclick="window.cancelEdit()"
+                class="hidden w-full mt-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
+                Cancel Edit
+              </button>
+            </form>
           </div>
-
-          <div class="space-y-1.5 mt-5">
-            <label class="text-sm font-semibold text-slate-700">Admission Class (For Y.E.S. Academy)</label>
-            <select id="admissionClass"
-              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white">
-              <option value="" disabled selected>Select Admission Class</option>
-              <option value="Nursery">Nursery</option>
-              <option value="LKG">LKG</option>
-              <option value="UKG">UKG</option>
-              <option value="1st">1st Grade</option>
-              <option value="2nd">2nd Grade</option>
-              <option value="3rd">3rd Grade</option>
-              <option value="4th">4th Grade</option>
-              <option value="5th">5th Grade</option>
-              <option value="Not Decided">Not Decided</option>
-            </select>
-          </div>
-
-          <button type="submit" id="submitBtn"
-            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-indigo-200 transition-all flex justify-center items-center gap-2">
-            <i data-lucide="save" class="w-5 h-5"></i>
-            Save Survey Data
-          </button>
-          <button type="button" id="cancelEditBtn" onclick="window.cancelEdit()"
-            class="hidden w-full mt-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all flex justify-center items-center gap-2">
-            Cancel Edit
-          </button>
-          </form>
         </div>
-      </div>
       </div>
 
       <div id="content-surveyors" class="hidden space-y-4 animate-fade-in">
-        <div
-          class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-3 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
           <div class="flex items-center gap-3">
             <i data-lucide="users" class="w-6 h-6 text-indigo-600"></i>
             <div>
@@ -500,6 +509,7 @@
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50 text-slate-600">
               <tr>
+                <th class="px-4 py-3 text-left font-semibold w-12">S.No.</th>
                 <th class="px-4 py-3 text-left font-semibold">Name</th>
                 <th class="px-4 py-3 text-left font-semibold">Age/Gender</th>
                 <th class="px-4 py-3 text-left font-semibold">Father Name</th>
@@ -518,9 +528,35 @@
         </div>
       </div>
 
+      <div id="content-admitted" class="hidden space-y-4 animate-fade-in">
+        <div class="bg-indigo-50 border border-indigo-200 text-indigo-800 px-4 py-4 rounded-xl flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-6 h-6 text-indigo-600"></i>
+            <div>
+              <h4 class="font-semibold text-sm">Admissions Dashboard</h4>
+              <p class="text-xs opacity-80">Students marked for admission show up here. Pending items require Main Admin approval to confirm.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mt-4">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-50 text-slate-600">
+              <tr>
+                <th class="px-4 py-3 text-left font-semibold w-12">S.No.</th>
+                <th class="px-4 py-3 text-left font-semibold">Student Name</th>
+                <th class="px-4 py-3 text-left font-semibold">Admission Class</th>
+                <th class="px-4 py-3 text-left font-semibold">Father's Name</th>
+                <th class="px-4 py-3 text-left font-semibold">Phone Contact</th>
+                <th class="px-4 py-3 text-center font-semibold">Admission Status</th>
+                <th class="px-4 py-3 text-center font-semibold">Admin Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admittedDataTable" class="divide-y divide-slate-200"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div id="content-trash" class="hidden space-y-4 animate-fade-in">
-        <div
-          class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm">
+        <div class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl flex items-center gap-2 text-sm">
           <i data-lucide="info" class="w-5 h-5"></i>
           Files here are soft-deleted. You can restore them or delete them permanently.
         </div>
@@ -528,6 +564,7 @@
           <table class="min-w-full divide-y divide-slate-200 text-sm">
             <thead class="bg-slate-50 text-slate-600">
               <tr>
+                <th class="px-4 py-3 text-left font-semibold w-12">S.No.</th>
                 <th class="px-4 py-3 text-left font-semibold">Name</th>
                 <th class="px-4 py-3 text-left font-semibold">Village</th>
                 <th class="px-4 py-3 text-left font-semibold">Class</th>
@@ -540,8 +577,7 @@
       </div>
 
       <div id="content-devices" class="hidden space-y-4 animate-fade-in">
-        <div
-          class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
           <div class="flex items-center gap-3">
             <i data-lucide="shield-alert" class="w-6 h-6 text-amber-600"></i>
             <div>
@@ -617,8 +653,9 @@
   <script>
     lucide.createIcons();
     window.firebaseUser = null;
-    window.currentActiveTab = 'survey';
-    window.currentFilteredData = []; // Store current filtered data for Export
+    window.currentActiveTab = 'surveyFormTab';
+    window.currentFilteredData = [];
+    window.isAddSibling = false;
 
     window.showToast = function (message, type = 'success') {
       const container = document.getElementById('toast-container');
@@ -651,10 +688,8 @@
       }
     }
 
-
-
     window.switchDashTab = function (tab) {
-      ['surveyFormTab', 'surveyors', 'analytics', 'data', 'trash', 'devices'].forEach(t => {
+      ['surveyFormTab', 'surveyors', 'analytics', 'data', 'admitted', 'trash', 'devices'].forEach(t => {
         document.getElementById(`content-${t}`).classList.add('hidden');
         document.getElementById(`tab-${t}`).classList.remove('active', 'text-indigo-600', 'border-indigo-600');
       });
@@ -662,7 +697,6 @@
       document.getElementById(`tab-${tab}`).classList.add('active', 'text-indigo-600', 'border-indigo-600');
     }
 
-    // Generate unique local device ID
     window.getLocalDeviceId = function () {
       let id = localStorage.getItem('survey_local_device');
       if (!id) {
@@ -687,6 +721,18 @@
         if(schoolInput) schoolInput.required = false;
         if(classInput) classInput.value = "";
         if(schoolInput) schoolInput.value = "";
+      }
+    }
+
+    window.markGuardianManual = function() {
+      document.getElementById('parentName').dataset.manual = 'true';
+    }
+
+    window.autoFillGuardian = function() {
+      const fName = document.getElementById('fatherName').value;
+      const gInput = document.getElementById('parentName');
+      if(gInput.dataset.manual !== 'true') {
+        gInput.value = fName;
       }
     }
   </script>
@@ -749,11 +795,9 @@
       window.renderUIState();
     });
 
-    // --- Device Tracking & Limit Logic ---
     async function checkAndRegisterDevice() {
       const deviceId = window.getLocalDeviceId();
       try {
-        // Fetch IP
         let ip = "Unknown";
         try {
           const res = await fetch('https://api.ipify.org?format=json');
@@ -761,7 +805,6 @@
           ip = data.ip;
         } catch (e) { }
 
-        // Fetch Battery
         let battery = "Unknown";
         try {
           if (navigator.getBattery) {
@@ -770,7 +813,6 @@
           }
         } catch (e) { }
 
-        // Get Settings
         const settingsRef = doc(db, "settings", "login_config");
         const settingsSnap = await getDoc(settingsRef);
         let maxDevices = 1;
@@ -781,7 +823,6 @@
           await setDoc(settingsRef, { maxDevices: 1 });
         }
 
-        // Check active devices
         const devicesQuery = await getDocs(collection(db, "devices"));
         let deviceList = [];
         let deviceExists = false;
@@ -797,7 +838,6 @@
           return;
         }
 
-        // Save/Update Device Session
         const browserInfo = navigator.userAgent.substring(0, 40) + "...";
         await setDoc(doc(db, "devices", deviceId), {
           ip: ip,
@@ -809,7 +849,6 @@
       } catch (e) { console.error("Device verification error", e); }
     }
 
-    // --- Auth Functions ---\n
     document.getElementById('createSurveyorForm')?.addEventListener('submit', async (e) => {
       e.preventDefault();
       const nameInfo = document.getElementById('newSurveyorName').value;
@@ -878,8 +917,6 @@
       } catch (e) { }
     }
 
-
-    // --- PIN Logic for Device Tab ---
     window.openDeviceTab = function () {
       if (window.firebaseUser && window.firebaseUser.email === 'yashsharmaup2008@gmail.com') {
         window.switchDashTab('devices');
@@ -929,15 +966,14 @@
       window.showToast(`Limit updated to ${limit} devices.`, "success");
     }
 
-
-    // --- Survey Form Logic (Same as before) ---
+    // --- Survey Form Logic ---
     document.getElementById('surveyForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
+      const siblingBtn = document.getElementById('siblingBtn');
       const originalBtnText = submitBtn.innerHTML;
-      submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Saving...`;
-      submitBtn.disabled = true;
-
+      const originalSiblingBtnText = siblingBtn ? siblingBtn.innerHTML : '';
+      
       const data = {
         studentName: document.getElementById('studentName').value.trim(),
         age: parseInt(document.getElementById('age').value),
@@ -952,9 +988,34 @@
         phone: document.getElementById('phone').value.trim(),
         altPhone: document.getElementById('altPhone').value.trim(),
         status: document.getElementById('status').value,
+        admissionStatus: 'None' 
       };
 
       const editId = document.getElementById('editDocId').value;
+
+      const sNameLower = data.studentName.toLowerCase();
+      const fNameLower = data.fatherName.toLowerCase();
+      const isDuplicate = allSurveys.some(s => 
+          (s.studentName || "").toLowerCase() === sNameLower &&
+          (s.fatherName || "").toLowerCase() === fNameLower &&
+          s.phone === data.phone &&
+          s.id !== editId
+      );
+
+      if (isDuplicate) {
+          window.showToast("Student already exists in data!", "error");
+          return; 
+      }
+
+      if(window.isAddSibling) {
+          siblingBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Saving...`;
+          siblingBtn.disabled = true;
+          submitBtn.disabled = true;
+      } else {
+          submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Saving...`;
+          submitBtn.disabled = true;
+          if(siblingBtn) siblingBtn.disabled = true;
+      }
 
       try {
         if (editId) {
@@ -970,13 +1031,33 @@
           data.creatorName = window.loggedInName || "Surveyor";
           await addDoc(collection(db, "surveys"), data);
           window.showToast("Saved successfully!", "success");
-          document.getElementById('surveyForm').reset();
+
+          if(window.isAddSibling) {
+            document.getElementById('studentName').value = "";
+            document.getElementById('age').value = "";
+            document.getElementById('genderBoy').checked = false;
+            document.getElementById('genderGirl').checked = false;
+            document.getElementById('status').value = "";
+            document.getElementById('class').value = "";
+            document.getElementById('school').value = "";
+            document.getElementById('admissionClass').value = "";
+            window.toggleSchoolFields();
+            window.showToast("Parent details kept. Add next child.", "success");
+          } else {
+            document.getElementById('surveyForm').reset();
+            document.getElementById('parentName').dataset.manual = 'false';
+            window.toggleSchoolFields();
+          }
         }
       } catch (error) {
         window.showToast("Failed to save data.", "error");
       } finally {
         submitBtn.innerHTML = originalBtnText;
         submitBtn.disabled = false;
+        if(siblingBtn) {
+            siblingBtn.innerHTML = originalSiblingBtnText;
+            siblingBtn.disabled = false;
+        }
         lucide.createIcons();
       }
     });
@@ -984,13 +1065,13 @@
     window.cancelEdit = function () {
       document.getElementById('surveyForm').reset();
       document.getElementById('editDocId').value = "";
+      document.getElementById('parentName').dataset.manual = 'false';
       window.toggleSchoolFields();
-      document.getElementById('submitBtn').innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> Save Survey Data`;
+      document.getElementById('submitBtn').innerHTML = `<i data-lucide="save" class="w-5 h-5"></i> Complete & Save Survey Data`;
       document.getElementById('cancelEditBtn').classList.add('hidden');
       lucide.createIcons();
     }
 
-    // --- Dashboard & Excel Logic ---
     window.loadSurveyorsList = async function () {
       if (window.firebaseUser.email !== 'yashsharmaup2008@gmail.com') return;
       try {
@@ -1003,7 +1084,6 @@
           }
         });
 
-        // Count surveys
         const sSnap = await getDocs(collection(db, "surveys"));
         sSnap.forEach(s => {
           let by = s.data().createdBy;
@@ -1037,23 +1117,37 @@
         window.showToast("Failed to delete", "error");
       }
     }
-    // Call loadDashboardData
+
     window.loadDashboardData = async function () {
       if (!window.firebaseUser) return;
+      
+      const loader = document.getElementById('globalLoader');
+      loader.classList.remove('hidden');
+
       try {
         const querySnapshot = await getDocs(collection(db, "surveys"));
         allSurveys = [];
         const isAdmin = window.firebaseUser.email === 'yashsharmaup2008@gmail.com';
+        
         querySnapshot.forEach((doc) => {
           const d = doc.data();
-          if (!isAdmin && d.createdBy !== window.firebaseUser.uid) return; // Restrict data to own
-          allSurveys.push({ id: doc.id, ...d });
+          if (!isAdmin && d.createdBy !== window.firebaseUser.uid) return;
+          allSurveys.push({ id: doc.id, admissionStatus: d.admissionStatus || 'None', ...d });
         });
+
+        allSurveys.sort((a, b) => {
+            const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : (new Date(a.timestamp || 0));
+            const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : (new Date(b.timestamp || 0));
+            return dateB - dateA;
+        });
+
         populateFilters();
         window.applyFilters();
         if (isAdmin) window.loadSurveyorsList();
       } catch (error) {
         window.showToast("Failed to load data.", "error");
+      } finally {
+        loader.classList.add('hidden');
       }
     };
 
@@ -1074,6 +1168,8 @@
 
       window.currentFilteredData = [];
       const trashData = [];
+      const admittedData = []; 
+
       let total = 0, dropouts = 0;
       let villageMap = {}, genderMap = { "Boy": 0, "Girl": 0 }, classMap = { "Nursery": 0, "LKG": 0, "UKG": 0, "1st": 0, "2nd": 0, "3rd": 0, "4th": 0, "5th": 0 };
 
@@ -1082,14 +1178,17 @@
         
         const sName = (d.studentName || "").toLowerCase();
         const dVillage = d.village || "";
-        const dClass = d.class || "";
-        const dAdmClass = d.admissionClass || d.class || ""; // Fallback for old data
+        const dAdmClass = d.admissionClass || d.class || ""; 
         const dStatus = d.status || "";
         const dGender = d.gender || "";
 
+        if(d.admissionStatus === 'Pending' || d.admissionStatus === 'Admitted') {
+            admittedData.push(d);
+        }
+
         if (search && !sName.includes(search)) return;
         if (vil && dVillage !== vil) return;
-        if (cls && dAdmClass !== cls) return; // Filter by Admission Class
+        if (cls && dAdmClass !== cls) return; 
         if (status && dStatus !== status) return;
         if (genderFilter && dGender !== genderFilter) return;
 
@@ -1101,7 +1200,6 @@
         villageMap[vName] = (villageMap[vName] || 0) + 1;
         if (dGender) genderMap[dGender] = (genderMap[dGender] || 0) + 1;
         
-        // Count by Admission Class for chart
         if (classMap[dAdmClass] !== undefined) classMap[dAdmClass]++;
       });
 
@@ -1111,10 +1209,63 @@
 
       renderActiveTable(window.currentFilteredData);
       renderTrashTable(trashData);
+      renderAdmittedTable(admittedData);
       renderCharts(classMap, villageMap, genderMap);
     }
 
-    // --- Excel Export & Preview ---
+    function renderAdmittedTable(data) {
+        const tbody = document.getElementById('admittedDataTable');
+        const isAdmin = window.firebaseUser && window.firebaseUser.email === 'yashsharmaup2008@gmail.com';
+        
+        tbody.innerHTML = data.map((d, index) => {
+            const isPending = d.admissionStatus === 'Pending';
+            let actionBtn = `<button onclick="window.removeFromAdmissions('${d.id}')" class="p-1.5 bg-rose-100 text-rose-700 rounded hover:bg-rose-200" title="Remove from Admissions"><i data-lucide="x" class="w-4 h-4"></i></button>`;
+            
+            if (isPending && isAdmin) {
+                actionBtn = `<button onclick="window.confirmAdmission('${d.id}')" class="p-1.5 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 mr-2" title="Confirm Admission"><i data-lucide="check" class="w-4 h-4"></i></button>` + actionBtn;
+            }
+
+            let statusBadge = isPending 
+                ? `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-semibold whitespace-nowrap"><i data-lucide="clock" class="w-3 h-3 inline mr-1"></i>Pending</span>` 
+                : `<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-semibold whitespace-nowrap"><i data-lucide="check-circle" class="w-3 h-3 inline mr-1"></i>Admitted</span>`;
+
+            return `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-4 py-3 text-slate-600 font-medium">${index + 1}</td>
+                    <td class="px-4 py-3 font-medium text-slate-800">${d.studentName || "-"}</td>
+                    <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md text-xs font-semibold">${d.admissionClass || "-"}</span></td>
+                    <td class="px-4 py-3 text-slate-600">${d.fatherName || "-"}</td>
+                    <td class="px-4 py-3 text-slate-600">${d.phone || "-"}</td>
+                    <td class="px-4 py-3 text-center">${statusBadge}</td>
+                    <td class="px-4 py-3 text-center flex justify-center items-center">${actionBtn}</td>
+                </tr>
+            `;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    window.removeFromAdmissions = async function(id) {
+        if (!confirm("Are you sure you want to remove this student from the admission list?")) return;
+        try {
+            await updateDoc(doc(db, "surveys", id), { admissionStatus: 'None' });
+            window.showToast("Student removed from admissions.", "success");
+            window.loadDashboardData();
+        } catch(e) {
+            window.showToast("Error removing student.", "error");
+        }
+    }
+
+    window.confirmAdmission = async function (id) {
+        if (!confirm("Confirm admission for this student?")) return;
+        try {
+            await updateDoc(doc(db, "surveys", id), { admissionStatus: 'Admitted' });
+            window.showToast("Student Successfully Admitted!", "success");
+            window.loadDashboardData();
+        } catch(e) {
+            window.showToast("Error processing request.", "error");
+        }
+    }
+
     window.openPreviewModal = function () {
       if (window.currentFilteredData.length === 0) {
         window.showToast("No data to export!", "error");
@@ -1125,6 +1276,7 @@
       const tbody = document.getElementById('previewTableBody');
 
       thead.innerHTML = `
+                <th class="px-4 py-2 text-left font-semibold">S.No.</th>
                 <th class="px-4 py-2 text-left font-semibold">Name</th>
                 <th class="px-4 py-2 text-left font-semibold">Age</th>
                 <th class="px-4 py-2 text-left font-semibold">Gender</th>
@@ -1138,8 +1290,9 @@
                 <th class="px-4 py-2 text-left font-semibold">Phone(s)</th>
             `;
 
-      tbody.innerHTML = window.currentFilteredData.map(d => `
+      tbody.innerHTML = window.currentFilteredData.map((d, index) => `
                 <tr class="hover:bg-slate-100">
+                    <td class="px-4 py-2">${index + 1}</td>
                     <td class="px-4 py-2">${d.studentName || "-"}</td>
                     <td class="px-4 py-2">${d.age || "-"}</td>
                     <td class="px-4 py-2">${d.gender || "-"}</td>
@@ -1162,8 +1315,8 @@
     }
 
     window.executeExcelExport = function () {
-      // Clean data format for Excel
-      const exportFormat = window.currentFilteredData.map(d => ({
+      const exportFormat = window.currentFilteredData.map((d, index) => ({
+        "S.No.": index + 1,
         "Student Name": d.studentName || "-",
         "Age": d.age || "-",
         "Gender": d.gender || "-",
@@ -1177,7 +1330,8 @@
         "Primary Phone": d.phone || "-",
         "Entered By": d.creatorName || "-",
         "Alternate Phone": d.altPhone || "-",
-        "Education Status": d.status || "-"
+        "Education Status": d.status || "-",
+        "Admission Status": d.admissionStatus || "None"
       }));
 
       const ws = XLSX.utils.json_to_sheet(exportFormat);
@@ -1189,35 +1343,52 @@
       window.closePreviewModal();
     }
 
-    // --- Render Tables & Edit/Trash logic ---
     function renderActiveTable(data) {
       const tbody = document.getElementById('activeDataTable');
-      tbody.innerHTML = data.map(d => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-4 py-3 font-medium text-slate-800">${d.studentName || "-"}</td>
-                    <td class="px-4 py-3 text-slate-600">${d.age || "?"} / ${d.gender || "?"}</td>
-                    <td class="px-4 py-3 text-slate-600 text-xs">${d.fatherName || "-"}</td>
-                    <td class="px-4 py-3 text-slate-600 text-xs">${d.parentName || "-"} (${d.guardianRelation || "-"})</td>
-                    <td class="px-4 py-3 text-slate-600">${d.village || "-"}</td>
-                    <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md text-xs font-semibold">${d.admissionClass || d.class || "-"}</span></td>
-                    <td class="px-4 py-3 text-slate-600"><span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md text-xs font-semibold">${d.class || "-"}</span></td>
-                    <td class="px-4 py-3 text-slate-600">${d.school || "-"}</td>
-                    <td class="px-4 py-3 text-slate-600">${d.phone || "-"}<br><span class="text-xs text-slate-400 font-semibold opacity-75">${d.altPhone || '-'}</span></td>
-                    <td class="px-4 py-3 text-slate-600">${d.status || "-"}</td>
-                    <td class="px-4 py-3 flex justify-center gap-2">
-                        <a href="admission.html?id=${d.id}" target="_blank" class="p-1.5 bg-purple-50 text-purple-600 rounded hover:bg-purple-100 flex items-center justify-center" title="Admit Student"><i data-lucide="printer" class="w-4 h-4"></i></a>
-                        <button onclick="window.editEntry('${d.id}')" class="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100" title="Edit Student"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                        <button onclick="window.moveToTrash('${d.id}')" class="p-1.5 bg-rose-50 text-rose-600 rounded hover:bg-rose-100" title="Move to Trash"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+      tbody.innerHTML = data.map((d, index) => {
+          const isAdmitted = d.admissionStatus === 'Admitted';
+          
+          let statusHtml = d.status || "-";
+          if (isAdmitted) {
+              statusHtml = `<span class="bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-bold text-xs uppercase tracking-wide">Admitted</span>`;
+          }
+
+          let actionsHtml = '';
+          if (isAdmitted) {
+              actionsHtml = `<span class="text-slate-400 text-xs font-semibold italic opacity-75">No actions</span>`;
+          } else {
+              actionsHtml = `
+                ${(d.admissionStatus !== 'Pending') ? `<a href="admission.html?id=${d.id}" class="p-1.5 bg-orange-50 text-orange-600 rounded hover:bg-orange-100" title="Fill Admission Form"><i data-lucide="file-text" class="w-4 h-4"></i></a>` : ''}
+                <button onclick="window.editEntry('${d.id}')" class="p-1.5 bg-blue-50 text-blue-600 rounded hover:bg-blue-100" title="Edit Student"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                <button onclick="window.moveToTrash('${d.id}')" class="p-1.5 bg-rose-50 text-rose-600 rounded hover:bg-rose-100" title="Move to Trash"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              `;
+          }
+
+          return `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-4 py-3 text-slate-600 font-medium">${index + 1}</td>
+                <td class="px-4 py-3 font-medium text-slate-800">${d.studentName || "-"}</td>
+                <td class="px-4 py-3 text-slate-600">${d.age || "?"} / ${d.gender || "?"}</td>
+                <td class="px-4 py-3 text-slate-600 text-xs">${d.fatherName || "-"}</td>
+                <td class="px-4 py-3 text-slate-600 text-xs">${d.parentName || "-"} (${d.guardianRelation || "-"})</td>
+                <td class="px-4 py-3 text-slate-600">${d.village || "-"}</td>
+                <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md text-xs font-semibold">${d.admissionClass || d.class || "-"}</span></td>
+                <td class="px-4 py-3 text-slate-600"><span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-md text-xs font-semibold">${d.class || "-"}</span></td>
+                <td class="px-4 py-3 text-slate-600">${d.school || "-"}</td>
+                <td class="px-4 py-3 text-slate-600">${d.phone || "-"}<br><span class="text-xs text-slate-400 font-semibold opacity-75">${d.altPhone || '-'}</span></td>
+                <td class="px-4 py-3 text-center">${statusHtml}</td>
+                <td class="px-4 py-3 flex justify-center items-center gap-2">${actionsHtml}</td>
+            </tr>
+          `;
+      }).join('');
       lucide.createIcons();
     }
 
     function renderTrashTable(data) {
       const tbody = document.getElementById('trashDataTable');
-      tbody.innerHTML = data.map(d => `
+      tbody.innerHTML = data.map((d, index) => `
                 <tr class="hover:bg-rose-50/50">
+                    <td class="px-4 py-3 text-slate-600 font-medium">${index + 1}</td>
                     <td class="px-4 py-3 font-medium text-slate-800">${d.studentName}</td>
                     <td class="px-4 py-3 text-slate-600">${d.village}</td>
                     <td class="px-4 py-3 text-slate-600">${d.class}</td>
@@ -1273,7 +1444,6 @@
       window.loadDashboardData();
     }
 
-    // --- Charts ---
     let cChart, vChart, gChart;
     function renderCharts(classData, villageData, genderData) {
       Chart.defaults.font.family = "'Inter', sans-serif";
