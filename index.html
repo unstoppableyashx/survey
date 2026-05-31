@@ -88,6 +88,9 @@
           <button onclick="window.openPreviewModal()" class="flex items-center gap-2 p-2 px-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 hover:bg-emerald-100 transition-all shadow-sm font-semibold text-sm">
             <i data-lucide="file-spreadsheet" class="w-4 h-4"></i> Export Excel
           </button>
+          <button onclick="window.loadDashboardData()" class="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm" title="Refresh Data">
+            <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+          </button>
           <button onclick="window.logoutAdmin()" class="flex items-center gap-2 p-2 px-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-600 hover:bg-rose-100 transition-all shadow-sm font-semibold text-sm">
             <i data-lucide="log-out" class="w-4 h-4"></i> Logout
           </button>
@@ -355,7 +358,7 @@
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Class</label><select id="filterClassList" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()"><option value="">All Classes</option><option value="Nursery">Nursery</option><option value="LKG">LKG</option><option value="UKG">UKG</option><option value="1st">1st Grade</option><option value="2nd">2nd Grade</option><option value="3rd">3rd Grade</option><option value="4th">4th Grade</option><option value="5th">5th Grade</option><option value="6th">6th Grade</option><option value="7th">7th Grade</option><option value="8th">8th Grade</option></select></div>
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Status</label><select id="filterStatus" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()"><option value="">All Statuses</option><option value="Currently Studying">Currently Studying</option><option value="Dropout">Dropout</option><option value="Never Enrolled">Never Enrolled</option></select></div>
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Specific Date</label><input type="date" id="filterSpecificDate" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full text-sm" onchange="window.applyDataFilters()"></div>
-              <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Sort By</label><select id="sortOrder" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm font-semibold text-indigo-700" onchange="window.applyDataFilters()"><option value="desc">Date (Newest First)</option><option value="asc">Date (Oldest First)</option><option value="name_asc">Name (A-Z)</option><option value="name_desc">Name (Z-A)</option></select></div>
+              <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Sort By</label><select id="sortOrder" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm font-semibold text-indigo-700" onchange="window.applyDataFilters()"><option value="desc">Date (Latest First)</option><option value="asc">Date (Oldest First)</option><option value="name_asc">Name (A-Z)</option><option value="name_desc">Name (Z-A)</option></select></div>
             </div>
             <div class="mt-4 flex justify-end">
                 <button onclick="window.clearDataFilters()" class="flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-600 rounded-lg font-semibold hover:bg-rose-100 transition-colors text-sm"><i data-lucide="filter-x" class="w-4 h-4"></i> Clear All Filters</button>
@@ -505,7 +508,6 @@
       }, 3500);
     }
 
-    // Toggle logic for Filters Panel
     window.toggleFilterPanel = function() {
         const panel = document.getElementById('filterPanel');
         if(panel.classList.contains('hidden')) {
@@ -551,7 +553,6 @@
         window.showToast("Form Reset Successfully", "success");
     }
 
-    // Toggle logic for Office Mode (Manual Date)
     window.toggleOfficeMode = function() {
         const toggle = document.getElementById('officeModeToggle');
         const dateContainer = document.getElementById('customDateContainer');
@@ -660,7 +661,7 @@
     const secondaryAuth = getAuth(secondaryApp);
 
     let allSurveys = [];
-    let unsubscribeSurveys = null; // For Real-time Listener
+    let unsubscribeSurveys = null;
 
     onAuthStateChanged(auth, async (user) => {
       window.firebaseUser = user;
@@ -700,7 +701,7 @@
         loginSec.classList.remove('hidden');
         dashSec.classList.add('hidden');
         if (badge) badge.classList.add('hidden');
-        if(unsubscribeSurveys) unsubscribeSurveys(); // stop listening on logout
+        if(unsubscribeSurveys) unsubscribeSurveys(); 
       }
       window.renderUIState();
     });
@@ -832,7 +833,6 @@
       window.showToast(`Limit updated to ${limit} devices.`, "success");
     }
 
-    // HELPER: Fetch current form data
     function getFormData() {
       return {
         studentName: document.getElementById('studentName').value.trim(),
@@ -852,7 +852,6 @@
       };
     }
 
-    // STAGING LOGIC: ADD SIBLING
     window.stageStudent = function() {
         const form = document.getElementById('surveyForm');
         if(!form.checkValidity()) {
@@ -864,7 +863,6 @@
         window.stagedStudents.push(data);
         renderStagingArea();
 
-        // Clear only Student-specific fields for quick sibling addition
         document.getElementById('studentName').value = "";
         document.getElementById('age').value = "";
         const gB = document.getElementById('genderBoy'); if(gB) gB.checked = false;
@@ -910,11 +908,9 @@
 
     window.editStagedStudent = function(index) {
         const s = window.stagedStudents[index];
-        // Pop it out of the array
         window.stagedStudents.splice(index, 1);
         renderStagingArea();
         
-        // Feed back into inputs
         document.getElementById('studentName').value = s.studentName || "";
         document.getElementById('age').value = s.age ? s.age.toString() : "";
         if (s.gender === "Boy") document.getElementById('genderBoy').checked = true;
@@ -939,7 +935,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // MAIN FORM SUBMISSION (Handles Queued Students & Current Field Data)
     document.getElementById('surveyForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
@@ -962,7 +957,6 @@
           return;
       }
 
-      // Smart Duplicate Warning
       if (!window.forceSubmit && !editId) {
           submitBtn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> Checking Database...`;
           submitBtn.disabled = true;
@@ -970,7 +964,6 @@
           try {
              let duplicateFound = null;
              
-             // Check DB against the first student in the batch
              const dataToCheck = finalBatchToSave[0];
              const sNameLower = dataToCheck.studentName.toLowerCase();
              const fNameLower = dataToCheck.fatherName.toLowerCase();
@@ -1146,7 +1139,6 @@
       }
     }
 
-    // REAL-TIME DATA SYNC
     window.loadDashboardData = async function () {
       if (!window.firebaseUser) return;
       
@@ -1154,11 +1146,10 @@
       if (allSurveys.length === 0) loader.classList.remove('hidden'); 
       
       try {
-        if(unsubscribeSurveys) unsubscribeSurveys(); // Clear previous listener
+        if(unsubscribeSurveys) unsubscribeSurveys(); 
 
         const q = collection(db, "surveys");
         
-        // Listen to Live Updates automatically
         unsubscribeSurveys = onSnapshot(q, (querySnapshot) => {
             allSurveys = [];
             querySnapshot.forEach((doc) => {
@@ -1191,7 +1182,6 @@
       const vSelectData = document.getElementById('filterVillageList');
       const vSelectAnalytics = document.getElementById('analyticsVillageFilter');
       
-      // Preserve current selection if exists
       const currDataVil = vSelectData ? vSelectData.value : "";
       const currAnalVil = vSelectAnalytics ? vSelectAnalytics.value : "";
 
@@ -1239,7 +1229,6 @@
         if (genderFilter && dGender !== genderFilter) return;
 
         if (specDate) { 
-            // Handle timezone differences securely
             const y = entryDate.getFullYear();
             const m = String(entryDate.getMonth() + 1).padStart(2, '0');
             const dt = String(entryDate.getDate()).padStart(2, '0');
@@ -1251,12 +1240,14 @@
         window.currentFilteredData.push(d);
       });
 
-      // Advance Sorting Logic
+      const getTime = (timeObj) => timeObj?.toDate ? timeObj.toDate().getTime() : new Date(timeObj || 0).getTime();
+
       window.currentFilteredData.sort((a, b) => {
-          if(sortOrder === 'desc') return new Date(b.timestamp || 0) - new Date(a.timestamp || 0);
-          if(sortOrder === 'asc') return new Date(a.timestamp || 0) - new Date(b.timestamp || 0);
+          if(sortOrder === 'desc') return getTime(b.timestamp) - getTime(a.timestamp);
+          if(sortOrder === 'asc') return getTime(a.timestamp) - getTime(b.timestamp);
           if(sortOrder === 'name_asc') return (a.studentName || "").localeCompare(b.studentName || "");
           if(sortOrder === 'name_desc') return (b.studentName || "").localeCompare(a.studentName || "");
+          return 0;
       });
 
       renderActiveTable(window.currentFilteredData); 
