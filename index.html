@@ -352,12 +352,20 @@
         </div>
 
         <div id="filterPanel" class="hidden bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 items-end">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 items-end">
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Village</label><select id="filterVillageList" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()"><option value="">All Villages</option></select></div>
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Gender</label><select id="filterGender" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()"><option value="">All Genders</option><option value="Boy">Boys</option><option value="Girl">Girls</option></select></div>
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Class</label><select id="filterClassList" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()"><option value="">All Classes</option><option value="Nursery">Nursery</option><option value="LKG">LKG</option><option value="UKG">UKG</option><option value="1st">1st Grade</option><option value="2nd">2nd Grade</option><option value="3rd">3rd Grade</option><option value="4th">4th Grade</option><option value="5th">5th Grade</option><option value="6th">6th Grade</option><option value="7th">7th Grade</option><option value="8th">8th Grade</option></select></div>
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Status</label><select id="filterStatus" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()"><option value="">All Statuses</option><option value="Currently Studying">Currently Studying</option><option value="Dropout">Dropout</option><option value="Never Enrolled">Never Enrolled</option></select></div>
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Specific Date</label><input type="date" id="filterSpecificDate" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full text-sm" onchange="window.applyDataFilters()"></div>
+              
+              <div id="surveyorFilterContainer" class="col-span-2 lg:col-span-1 hidden">
+                  <label class="text-xs text-slate-500 font-semibold mb-1 block">Surveyor</label>
+                  <select id="filterSurveyorList" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm" onchange="window.applyDataFilters()">
+                      <option value="">All Surveyors</option>
+                  </select>
+              </div>
+
               <div class="col-span-2 lg:col-span-1"><label class="text-xs text-slate-500 font-semibold mb-1 block">Sort By</label><select id="sortOrder" class="px-3 py-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 w-full bg-white text-sm font-semibold text-indigo-700" onchange="window.applyDataFilters()"><option value="desc">Date (Latest First)</option><option value="asc">Date (Oldest First)</option><option value="name_asc">Name (A-Z)</option><option value="name_desc">Name (Z-A)</option></select></div>
             </div>
             <div class="mt-4 flex justify-end">
@@ -524,6 +532,7 @@
         document.getElementById('filterStatus').value = "";
         document.getElementById('filterSpecificDate').value = "";
         document.getElementById('sortOrder').value = "desc";
+        if(document.getElementById('filterSurveyorList')) document.getElementById('filterSurveyorList').value = "";
         window.applyDataFilters();
     }
 
@@ -571,15 +580,18 @@
       const tabDevicesBtn = document.getElementById('tab-devices');
       const tabSurveyorsBtn = document.getElementById('tab-surveyors');
       const officeModeContainer = document.getElementById('officeModeContainer');
+      const surveyorFilterContainer = document.getElementById('surveyorFilterContainer');
       
       if (window.isAdmin) {
         if (tabDevicesBtn) tabDevicesBtn.classList.remove('hidden');
         if (tabSurveyorsBtn) tabSurveyorsBtn.classList.remove('hidden');
         if (officeModeContainer) officeModeContainer.classList.remove('hidden');
+        if (surveyorFilterContainer) surveyorFilterContainer.classList.remove('hidden');
       } else {
         if (tabDevicesBtn) tabDevicesBtn.classList.add('hidden');
         if (tabSurveyorsBtn) tabSurveyorsBtn.classList.add('hidden');
         if (officeModeContainer) officeModeContainer.classList.add('hidden');
+        if (surveyorFilterContainer) surveyorFilterContainer.classList.add('hidden');
       }
     }
 
@@ -1080,17 +1092,33 @@
       lucide.createIcons();
     }
 
+    // UPDATED SURVEYOR LIST FUNCTION TO POPULATE FILTER
     window.loadSurveyorsList = async function () {
       if (!window.isAdmin) return;
       try {
         const uSnap = await getDocs(collection(db, "users"));
         let surveyorsMap = {};
+        
+        // Prepare dropdown html for filters
+        let dropdownHtml = '<option value="">All Surveyors</option>';
+
         uSnap.forEach(doc => {
           const d = doc.data();
           if (d.role === "surveyor") {
             surveyorsMap[doc.id] = { id: doc.id, name: d.name || "Unknown", phone: d.phone || "-", email: d.email || "-", password: d.password || "[Hidden]", count: 0 };
+            
+            // Add to dropdown list using UID
+            dropdownHtml += `<option value="${doc.id}">${d.name || "Unknown"}</option>`;
           }
         });
+
+        // Set the filter dropdown
+        const filterDropdown = document.getElementById('filterSurveyorList');
+        if (filterDropdown) {
+            const currentSelected = filterDropdown.value;
+            filterDropdown.innerHTML = dropdownHtml;
+            filterDropdown.value = currentSelected;
+        }
 
         const sSnap = await getDocs(collection(db, "surveys"));
         sSnap.forEach(s => { let by = s.data().createdBy; if (by && surveyorsMap[by]) { surveyorsMap[by].count++; } });
@@ -1161,7 +1189,7 @@
             populateDropdowns(); 
             window.applyDataFilters();
             window.applyAnalyticsFilters();
-            if (window.isAdmin) window.loadSurveyorsList();
+            if (window.isAdmin) window.loadSurveyorsList(); // Reloads surveyors & the surveyor filter dropdown
             
             loader.classList.add('hidden');
         }, (error) => {
@@ -1200,6 +1228,7 @@
       const genderFilter = document.getElementById('filterGender').value;
       const specDate = document.getElementById('filterSpecificDate').value;
       const sortOrder = document.getElementById('sortOrder').value;
+      const selectedSurveyor = document.getElementById('filterSurveyorList')?.value; // Get Surveyor
 
       window.currentFilteredData = [];
       const trashData = []; const admittedData = []; 
@@ -1215,6 +1244,7 @@
         const dAdmClass = d.admissionClass || d.class || ""; 
         const dStatus = d.status || "";
         const dGender = d.gender || "";
+        const dCreator = d.createdBy || "";
 
         if(d.admissionStatus === 'Pending' || d.admissionStatus === 'Admitted') { admittedData.push(d); }
 
@@ -1227,6 +1257,7 @@
         if (cls && dAdmClass !== cls) return; 
         if (status && dStatus !== status) return;
         if (genderFilter && dGender !== genderFilter) return;
+        if (selectedSurveyor && dCreator !== selectedSurveyor) return; // Evaluate Surveyor Filter
 
         if (specDate) { 
             const y = entryDate.getFullYear();
